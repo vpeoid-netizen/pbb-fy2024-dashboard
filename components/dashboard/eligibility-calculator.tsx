@@ -95,174 +95,214 @@ export function EligibilityCalculator({
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="space-y-5">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="total-indicators">Total applicable FY 2024 performance indicators</Label>
-              <Input
-                id="total-indicators"
-                type="number"
-                min={1}
-                value={form.totalPerformanceIndicators ?? ""}
-                onChange={(event) =>
-                  updateField(
-                    "totalPerformanceIndicators",
-                    event.target.value ? Number(event.target.value) : null,
-                  )
-                }
-                disabled={disabled}
-              />
-            </div>
-            <div>
-              <Label htmlFor="indicators-met">Number of indicators fully met</Label>
-              <Input
-                id="indicators-met"
-                type="number"
-                min={0}
-                value={form.performanceIndicatorsMet ?? ""}
-                onChange={(event) =>
-                  updateField(
-                    "performanceIndicatorsMet",
-                    event.target.value ? Number(event.target.value) : null,
-                  )
-                }
-                disabled={disabled}
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="process-improvement">
-              Percentage improvement in nominated critical service
-            </Label>
-            <Input
-              id="process-improvement"
-              type="number"
-              min={0}
-              step="0.01"
-              value={form.processImprovementPercent ?? ""}
-              onChange={(event) =>
-                updateField(
-                  "processImprovementPercent",
-                  event.target.value ? Number(event.target.value) : null,
-                )
-              }
-              disabled={disabled}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="bur-percent">FY 2024 Disbursement BUR percentage</Label>
-            <Input
-              id="bur-percent"
-              type="number"
-              min={0}
-              max={100}
-              step="0.01"
-              value={form.disbursementBurPercent ?? ""}
-              onChange={(event) =>
-                updateField(
-                  "disbursementBurPercent",
-                  event.target.value ? Number(event.target.value) : null,
-                )
-              }
-              disabled={disabled}
-            />
-          </div>
-
-          <fieldset className="space-y-3 rounded-2xl border border-white/60 p-4 dark:border-slate-700">
-            <legend className="px-1 text-sm font-semibold">Hotline #8888</legend>
-            <div className="flex items-center justify-between gap-3">
-              <Label htmlFor="hotline-no-complaints">No complaints received</Label>
-              <Switch
-                id="hotline-no-complaints"
-                checked={form.hotlineNoComplaints}
-                onCheckedChange={(checked) => updateField("hotlineNoComplaints", checked)}
-                disabled={disabled}
-              />
-            </div>
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Performance Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate accomplishment of applicable FY 2024 performance indicators.
+            </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <Label htmlFor="hotline-tickets">Number of applicable tickets</Label>
+                <Label htmlFor="total-indicators">
+                  Total applicable FY 2024 performance indicators
+                </Label>
                 <Input
-                  id="hotline-tickets"
+                  id="total-indicators"
                   type="number"
-                  min={0}
-                  value={form.hotlineTicketCount ?? ""}
+                  min={1}
+                  value={form.totalPerformanceIndicators ?? ""}
                   onChange={(event) =>
                     updateField(
-                      "hotlineTicketCount",
+                      "totalPerformanceIndicators",
                       event.target.value ? Number(event.target.value) : null,
                     )
                   }
-                  disabled={disabled || form.hotlineNoComplaints}
+                  disabled={disabled}
                 />
               </div>
               <div>
-                <Label htmlFor="hotline-rate">Resolution and compliance rate (%)</Label>
+                <Label htmlFor="indicators-met">Number of indicators fully met</Label>
                 <Input
-                  id="hotline-rate"
+                  id="indicators-met"
                   type="number"
                   min={0}
-                  max={100}
-                  step="0.01"
-                  value={form.hotlineResolutionRate ?? ""}
+                  value={form.performanceIndicatorsMet ?? ""}
                   onChange={(event) =>
                     updateField(
-                      "hotlineResolutionRate",
+                      "performanceIndicatorsMet",
                       event.target.value ? Number(event.target.value) : null,
                     )
                   }
-                  disabled={disabled || form.hotlineNoComplaints}
+                  disabled={disabled}
                 />
               </div>
             </div>
           </fieldset>
 
-          <fieldset className="space-y-3 rounded-2xl border border-white/60 p-4 dark:border-slate-700">
-            <legend className="px-1 text-sm font-semibold">Contact Center ng Bayan</legend>
-            <div className="flex items-center justify-between gap-3">
-              <Label htmlFor="ccb-no-complaints">No complaints received</Label>
-              <Switch
-                id="ccb-no-complaints"
-                checked={form.ccbNoComplaints}
-                onCheckedChange={(checked) => updateField("ccbNoComplaints", checked)}
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Process Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate improvement in the nominated critical service under the Citizen&apos;s Charter.
+            </p>
+            <div>
+              <Label htmlFor="process-improvement">
+                Percentage improvement in nominated critical service
+              </Label>
+              <Input
+                id="process-improvement"
+                type="number"
+                min={0}
+                step="0.01"
+                value={form.processImprovementPercent ?? ""}
+                onChange={(event) =>
+                  updateField(
+                    "processImprovementPercent",
+                    event.target.value ? Number(event.target.value) : null,
+                  )
+                }
                 disabled={disabled}
               />
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="ccb-tickets">Number of applicable tickets</Label>
-                <Input
-                  id="ccb-tickets"
-                  type="number"
-                  min={0}
-                  value={form.ccbTicketCount ?? ""}
-                  onChange={(event) =>
-                    updateField(
-                      "ccbTicketCount",
-                      event.target.value ? Number(event.target.value) : null,
-                    )
-                  }
-                  disabled={disabled || form.ccbNoComplaints}
+          </fieldset>
+
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Financial Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate FY 2024 Disbursement Budget Utilization (BUR) performance.
+            </p>
+            <div>
+              <Label htmlFor="bur-percent">FY 2024 Disbursement BUR percentage</Label>
+              <Input
+                id="bur-percent"
+                type="number"
+                min={0}
+                max={100}
+                step="0.01"
+                value={form.disbursementBurPercent ?? ""}
+                onChange={(event) =>
+                  updateField(
+                    "disbursementBurPercent",
+                    event.target.value ? Number(event.target.value) : null,
+                  )
+                }
+                disabled={disabled}
+              />
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-4 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Citizen/Client Satisfaction Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate complaint resolution and compliance for Hotline #8888 and Contact Center ng
+              Bayan.
+            </p>
+
+            <div className="space-y-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Hotline #8888
+              </p>
+              <div className="flex items-center justify-between gap-3">
+                <Label htmlFor="hotline-no-complaints">No complaints received</Label>
+                <Switch
+                  id="hotline-no-complaints"
+                  checked={form.hotlineNoComplaints}
+                  onCheckedChange={(checked) => updateField("hotlineNoComplaints", checked)}
+                  disabled={disabled}
                 />
               </div>
-              <div>
-                <Label htmlFor="ccb-rate">Resolution and compliance rate (%)</Label>
-                <Input
-                  id="ccb-rate"
-                  type="number"
-                  min={0}
-                  max={100}
-                  step="0.01"
-                  value={form.ccbResolutionRate ?? ""}
-                  onChange={(event) =>
-                    updateField(
-                      "ccbResolutionRate",
-                      event.target.value ? Number(event.target.value) : null,
-                    )
-                  }
-                  disabled={disabled || form.ccbNoComplaints}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="hotline-tickets">Number of applicable tickets</Label>
+                  <Input
+                    id="hotline-tickets"
+                    type="number"
+                    min={0}
+                    value={form.hotlineTicketCount ?? ""}
+                    onChange={(event) =>
+                      updateField(
+                        "hotlineTicketCount",
+                        event.target.value ? Number(event.target.value) : null,
+                      )
+                    }
+                    disabled={disabled || form.hotlineNoComplaints}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="hotline-rate">Resolution and compliance rate (%)</Label>
+                  <Input
+                    id="hotline-rate"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={form.hotlineResolutionRate ?? ""}
+                    onChange={(event) =>
+                      updateField(
+                        "hotlineResolutionRate",
+                        event.target.value ? Number(event.target.value) : null,
+                      )
+                    }
+                    disabled={disabled || form.hotlineNoComplaints}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Contact Center ng Bayan
+              </p>
+              <div className="flex items-center justify-between gap-3">
+                <Label htmlFor="ccb-no-complaints">No complaints received</Label>
+                <Switch
+                  id="ccb-no-complaints"
+                  checked={form.ccbNoComplaints}
+                  onCheckedChange={(checked) => updateField("ccbNoComplaints", checked)}
+                  disabled={disabled}
                 />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="ccb-tickets">Number of applicable tickets</Label>
+                  <Input
+                    id="ccb-tickets"
+                    type="number"
+                    min={0}
+                    value={form.ccbTicketCount ?? ""}
+                    onChange={(event) =>
+                      updateField(
+                        "ccbTicketCount",
+                        event.target.value ? Number(event.target.value) : null,
+                      )
+                    }
+                    disabled={disabled || form.ccbNoComplaints}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="ccb-rate">Resolution and compliance rate (%)</Label>
+                  <Input
+                    id="ccb-rate"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={form.ccbResolutionRate ?? ""}
+                    onChange={(event) =>
+                      updateField(
+                        "ccbResolutionRate",
+                        event.target.value ? Number(event.target.value) : null,
+                      )
+                    }
+                    disabled={disabled || form.ccbNoComplaints}
+                  />
+                </div>
               </div>
             </div>
           </fieldset>

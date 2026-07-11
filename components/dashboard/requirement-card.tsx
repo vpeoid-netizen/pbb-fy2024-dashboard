@@ -36,6 +36,7 @@ type RequirementCardProps = {
   disabled?: boolean;
   onRequestUpdater: (action: (updaterName: string) => void) => void;
   onUpdated: () => void;
+  hideCategoryBadge?: boolean;
 };
 
 export function RequirementCard({
@@ -43,6 +44,7 @@ export function RequirementCard({
   disabled,
   onRequestUpdater,
   onUpdated,
+  hideCategoryBadge = false,
 }: RequirementCardProps) {
   const [expanded, setExpanded] = useState(false);
   const Icon = categoryIcons[requirement.category];
@@ -57,20 +59,22 @@ export function RequirementCard({
   };
 
   return (
-    <article className="glass-card flex h-full flex-col rounded-3xl p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-2">
-          <span className="inline-flex items-center gap-2 rounded-full bg-light-blue/70 px-3 py-1 text-xs font-medium text-navy dark:bg-slate-800 dark:text-blue-100">
-            <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-            {getCategoryLabel(requirement.category)}
-          </span>
-          <h3 className="text-lg font-semibold text-navy dark:text-white">
+    <article className="glass-card flex h-full min-w-0 flex-col overflow-hidden rounded-3xl p-5">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1 space-y-2">
+          {!hideCategoryBadge && (
+            <span className="inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full bg-light-blue/70 px-3 py-1 text-xs font-medium text-navy dark:bg-slate-800 dark:text-blue-100">
+              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{getCategoryLabel(requirement.category)}</span>
+            </span>
+          )}
+          <h3 className="break-words text-lg font-semibold leading-snug text-navy dark:text-white">
             {requirement.title}
           </h3>
         </div>
         <span
           className={cn(
-            "rounded-full px-3 py-1 text-xs font-semibold",
+            "inline-flex shrink-0 self-start whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold",
             requirement.submitted
               ? "bg-success/15 text-success"
               : "bg-warning/15 text-warning",

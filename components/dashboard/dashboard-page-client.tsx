@@ -7,12 +7,10 @@ import { DashboardControls } from "@/components/dashboard/dashboard-controls";
 import { DashboardFooter } from "@/components/dashboard/footer";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { EligibilityCalculator } from "@/components/dashboard/eligibility-calculator";
-import { ExportControls } from "@/components/dashboard/export-controls";
 import { MonitoringSummaryCard } from "@/components/dashboard/monitoring-summary";
 import { PrintReport } from "@/components/dashboard/print-report";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
-import { ReportingFormsCard } from "@/components/dashboard/reporting-forms-card";
-import { RequirementGrid } from "@/components/dashboard/requirement-grid";
+import { RequirementsSections } from "@/components/dashboard/requirements-sections";
 import {
   UpdaterNameDialog,
   useUpdaterGate,
@@ -77,10 +75,6 @@ export function DashboardPageClient() {
           connectionStatus={connectionStatus}
         />
 
-        <ReportingFormsCard />
-
-        <ExportControls />
-
         <RecentActivity activity={data.recentActivity} />
 
         <DashboardControls
@@ -90,7 +84,7 @@ export function DashboardPageClient() {
           onFilteredChange={handleFilteredChange}
         />
 
-        <RequirementGrid
+        <RequirementsSections
           requirements={requirementsForGrid}
           disabled={!isOnline}
           onRequestUpdater={requestUpdater}
