@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { generateBrowserSessionId } from "@/lib/utils";
@@ -23,8 +24,7 @@ export function RemarksField({
   onUpdated,
 }: RemarksFieldProps) {
   const [value, setValue] = useState(requirement.remarks);
-  const [saveState, setSaveState] = useState<SaveState>("idle");
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>("saved");
   const latestServerRemarks = useRef(requirement.remarks);
 
   useEffect(() => {
@@ -67,6 +67,7 @@ export function RemarksField({
         }
 
         setSaveState("saved");
+        toast.success("Remarks saved.");
         onUpdated();
       } catch {
         setSaveState("failed");
@@ -76,45 +77,23 @@ export function RemarksField({
     [requirement.id, requirement.version, onUpdated],
   );
 
-  const scheduleSave = useCallback(
-    (nextValue: string) => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-
-      if (nextValue === latestServerRemarks.current) {
-        setSaveState("saved");
-        return;
-      }
-
-      setSaveState("unsaved");
-      debounceRef.current = setTimeout(() => {
-        onRequestUpdater((updaterName) => {
-          void saveRemarks(nextValue, updaterName);
-        });
-      }, 1000);
-    },
-    [onRequestUpdater, saveRemarks],
-  );
-
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, []);
+  const handleSave = () => {
+    onRequestUpdater((updaterName) => {
+      void saveRemarks(value, updaterName);
+    });
+  };
 
   const remaining = 1000 - value.length;
+  const hasUnsavedChanges = value !== latestServerRemarks.current;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2">
         <Label htmlFor={`remarks-${requirement.id}`}>Remarks</Label>
         <span className="text-xs text-slate-500" aria-live="polite">
-          {saveState === "unsaved" && "Unsaved Changes"}
           {saveState === "saving" && "Saving…"}
-          {saveState === "saved" && "Saved"}
+          {saveState === "saved" && !hasUnsavedChanges && "Saved"}
+          {hasUnsavedChanges && saveState !== "saving" && "Unsaved Changes"}
           {saveState === "failed" && "Save Failed"}
         </span>
       </div>
@@ -124,18 +103,35 @@ export function RemarksField({
         onChange={(event) => {
           const next = event.target.value.slice(0, 1000);
           setValue(next);
-          scheduleSave(next);
+          if (next !== latestServerRemarks.current) {
+            setSaveState("unsaved");
+          } else {
+            setSaveState("saved");
+          }
         }}
         placeholder="Add submission details, deficiencies, follow-up actions, proof-of-submission information, or validation status."
         disabled={disabled}
         rows={4}
       />
-      <div className="flex items-center justify-between text-xs text-slate-500">
-        <p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-slate-500">
           Changes are shared with all dashboard users. Do not enter confidential, personal,
           or sensitive information in the remarks.
         </p>
-        <span aria-live="polite">{remaining} characters remaining</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-slate-500" aria-live="polite">
+            {remaining} characters remaining
+          </span>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={handleSave}
+            disabled={disabled || saveState === "saving" || !hasUnsavedChanges}
+          >
+            {saveState === "saving" ? "Saving…" : "Save Remarks"}
+          </Button>
+        </div>
       </div>
     </div>
   );

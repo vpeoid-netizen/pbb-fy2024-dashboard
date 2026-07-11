@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import { Toaster } from "sonner";
-import { AccountabilityChecklist } from "@/components/dashboard/accountability-checklist";
 import { DashboardControls } from "@/components/dashboard/dashboard-controls";
 import { DashboardFooter } from "@/components/dashboard/footer";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -19,7 +18,7 @@ import { useDashboard } from "@/hooks/use-dashboard";
 import type { RequirementWithMonitoring } from "@/types/pbb";
 
 export function DashboardPageClient() {
-  const { data, error, isLoading, isValidating, connectionStatus, isOnline, refresh, mutate } =
+  const { data, error, isValidating, connectionStatus, isOnline, refresh, mutate } =
     useDashboard();
   const { dialogOpen, setDialogOpen, requestUpdater, handleConfirm } = useUpdaterGate();
   const [filteredRequirements, setFilteredRequirements] = useState<
@@ -33,30 +32,6 @@ export function DashboardPageClient() {
   const handleFilteredChange = useCallback((filtered: RequirementWithMonitoring[]) => {
     setFilteredRequirements(filtered);
   }, []);
-
-  if (isLoading && !data) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-10 text-center text-slate-600">
-        Loading centralized monitoring dashboard…
-      </div>
-    );
-  }
-
-  if (error && !data) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="glass-card rounded-3xl p-8 text-center">
-          <h2 className="text-xl font-semibold text-danger">
-            Unable to connect to the monitoring database
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Verify that DATABASE_URL is configured and that migrations and seed scripts have
-            been run.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   if (!data) {
     return null;
@@ -75,6 +50,14 @@ export function DashboardPageClient() {
           connectionStatus={connectionStatus}
         />
 
+        <EligibilityCalculator
+          assessment={data.eligibilityAssessment}
+          result={data.eligibilityResult}
+          disabled={!isOnline}
+          onRequestUpdater={requestUpdater}
+          onUpdated={handleUpdated}
+        />
+
         <RecentActivity activity={data.recentActivity} />
 
         <DashboardControls
@@ -91,21 +74,12 @@ export function DashboardPageClient() {
           onUpdated={handleUpdated}
         />
 
-        <EligibilityCalculator
-          assessment={data.eligibilityAssessment}
-          result={data.eligibilityResult}
-          disabled={!isOnline}
-          onRequestUpdater={requestUpdater}
-          onUpdated={handleUpdated}
-        />
-
-        <AccountabilityChecklist
-          accountabilities={data.accountabilities}
-          requirements={data.requirements}
-          disabled={!isOnline}
-          onRequestUpdater={requestUpdater}
-          onUpdated={handleUpdated}
-        />
+        {error && (
+          <div className="glass-card rounded-3xl border border-danger/30 p-4 text-sm text-danger">
+            Unable to refresh the latest monitoring data. Showing the most recent available
+            information.
+          </div>
+        )}
 
         <DashboardFooter />
       </div>

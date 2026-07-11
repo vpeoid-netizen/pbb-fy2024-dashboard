@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import { useCallback, useEffect, useState } from "react";
+import { getInitialDashboardData } from "@/lib/initial-dashboard-data";
 import type { ConnectionStatus, DashboardData } from "@/types/pbb";
 
 const fetcher = async (url: string): Promise<DashboardData> => {
@@ -20,6 +21,7 @@ export function useDashboard() {
     "/api/dashboard",
     fetcher,
     {
+      fallbackData: getInitialDashboardData(),
       refreshInterval: 5000,
       revalidateOnFocus: true,
       revalidateOnReconnect: true,
