@@ -41,6 +41,8 @@ type EligibilityRow = {
   total_performance_indicators: number | null;
   performance_indicators_met: number | null;
   process_improvement_percent: string | null;
+  process_nominated_service: string | null;
+  process_service_provider: string | null;
   disbursement_bur_percent: string | null;
   hotline_ticket_count: number | null;
   hotline_resolution_rate: string | null;
@@ -50,6 +52,11 @@ type EligibilityRow = {
   ccb_no_complaints: boolean;
   all_reports_submitted_on_time: boolean;
   late_reportorial_submissions: LateReportorialSubmissionRow[] | null;
+  performance_remarks: string | null;
+  process_remarks: string | null;
+  financial_remarks: string | null;
+  citizen_satisfaction_remarks: string | null;
+  reportorial_remarks: string | null;
   updated_by: string | null;
   updated_at: string;
   version: number;
@@ -131,6 +138,8 @@ function mapEligibility(row: EligibilityRow): EligibilityAssessment {
       row.process_improvement_percent !== null
         ? Number(row.process_improvement_percent)
         : null,
+    processNominatedService: row.process_nominated_service ?? "",
+    processServiceProvider: row.process_service_provider ?? "",
     disbursementBurPercent:
       row.disbursement_bur_percent !== null
         ? Number(row.disbursement_bur_percent)
@@ -147,6 +156,11 @@ function mapEligibility(row: EligibilityRow): EligibilityAssessment {
     ccbNoComplaints: row.ccb_no_complaints,
     allReportsSubmittedOnTime: row.all_reports_submitted_on_time,
     lateReportorialSubmissions: mapLateSubmissions(row.late_reportorial_submissions),
+    performanceRemarks: row.performance_remarks ?? "",
+    processRemarks: row.process_remarks ?? "",
+    financialRemarks: row.financial_remarks ?? "",
+    citizenSatisfactionRemarks: row.citizen_satisfaction_remarks ?? "",
+    reportorialRemarks: row.reportorial_remarks ?? "",
     updatedBy: row.updated_by,
     updatedAt: toIsoString(row.updated_at) ?? new Date().toISOString(),
     version: row.version,
@@ -234,6 +248,8 @@ export async function fetchEligibilityAssessment(): Promise<EligibilityAssessmen
       totalPerformanceIndicators: null,
       performanceIndicatorsMet: null,
       processImprovementPercent: null,
+      processNominatedService: "",
+      processServiceProvider: "",
       disbursementBurPercent: null,
       hotlineTicketCount: null,
       hotlineResolutionRate: null,
@@ -243,6 +259,11 @@ export async function fetchEligibilityAssessment(): Promise<EligibilityAssessmen
       ccbNoComplaints: false,
       allReportsSubmittedOnTime: true,
       lateReportorialSubmissions: [],
+      performanceRemarks: "",
+      processRemarks: "",
+      financialRemarks: "",
+      citizenSatisfactionRemarks: "",
+      reportorialRemarks: "",
       updatedBy: null,
       updatedAt: new Date().toISOString(),
       version: 1,

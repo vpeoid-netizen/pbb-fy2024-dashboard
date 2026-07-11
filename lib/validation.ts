@@ -34,11 +34,17 @@ export const lateReportorialSubmissionSchema = z.object({
   reason: z.string().trim().min(1, "Reason or remarks are required.").max(1000),
 });
 
+export const eligibilityTextFieldSchema = z.string().max(1000);
+
+export const eligibilityShortTextFieldSchema = z.string().max(300);
+
 export const eligibilityPatchSchema = z
   .object({
     totalPerformanceIndicators: z.number().int().min(1).nullable(),
     performanceIndicatorsMet: z.number().int().min(0).nullable(),
     processImprovementPercent: z.number().min(0).nullable(),
+    processNominatedService: eligibilityShortTextFieldSchema,
+    processServiceProvider: eligibilityShortTextFieldSchema,
     disbursementBurPercent: z.number().min(0).max(100).nullable(),
     hotlineTicketCount: z.number().int().min(0).nullable(),
     hotlineResolutionRate: z.number().min(0).max(100).nullable(),
@@ -48,6 +54,11 @@ export const eligibilityPatchSchema = z
     ccbNoComplaints: z.boolean(),
     allReportsSubmittedOnTime: z.boolean(),
     lateReportorialSubmissions: z.array(lateReportorialSubmissionSchema),
+    performanceRemarks: eligibilityTextFieldSchema,
+    processRemarks: eligibilityTextFieldSchema,
+    financialRemarks: eligibilityTextFieldSchema,
+    citizenSatisfactionRemarks: eligibilityTextFieldSchema,
+    reportorialRemarks: eligibilityTextFieldSchema,
     updatedBy: updaterNameSchema,
     expectedVersion: z.number().int().positive(),
   })

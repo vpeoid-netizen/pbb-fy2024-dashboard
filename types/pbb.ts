@@ -68,6 +68,8 @@ export type EligibilityAssessment = {
   totalPerformanceIndicators: number | null;
   performanceIndicatorsMet: number | null;
   processImprovementPercent: number | null;
+  processNominatedService: string;
+  processServiceProvider: string;
   disbursementBurPercent: number | null;
   hotlineTicketCount: number | null;
   hotlineResolutionRate: number | null;
@@ -77,6 +79,11 @@ export type EligibilityAssessment = {
   ccbNoComplaints: boolean;
   allReportsSubmittedOnTime: boolean;
   lateReportorialSubmissions: LateReportorialSubmission[];
+  performanceRemarks: string;
+  processRemarks: string;
+  financialRemarks: string;
+  citizenSatisfactionRemarks: string;
+  reportorialRemarks: string;
   updatedBy: string | null;
   updatedAt: string;
   version: number;

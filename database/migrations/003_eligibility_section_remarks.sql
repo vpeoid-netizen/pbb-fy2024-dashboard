@@ -1,0 +1,8 @@
+ALTER TABLE eligibility_assessment
+ADD COLUMN IF NOT EXISTS performance_remarks TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS process_nominated_service TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS process_service_provider TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS process_remarks TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS financial_remarks TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS citizen_satisfaction_remarks TEXT NOT NULL DEFAULT '',
+ADD COLUMN IF NOT EXISTS reportorial_remarks TEXT NOT NULL DEFAULT '';

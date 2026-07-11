@@ -118,6 +118,8 @@ type UpdateEligibilityInput = {
   totalPerformanceIndicators: number | null;
   performanceIndicatorsMet: number | null;
   processImprovementPercent: number | null;
+  processNominatedService: string;
+  processServiceProvider: string;
   disbursementBurPercent: number | null;
   hotlineTicketCount: number | null;
   hotlineResolutionRate: number | null;
@@ -127,6 +129,11 @@ type UpdateEligibilityInput = {
   ccbNoComplaints: boolean;
   allReportsSubmittedOnTime: boolean;
   lateReportorialSubmissions: LateReportorialSubmission[];
+  performanceRemarks: string;
+  processRemarks: string;
+  financialRemarks: string;
+  citizenSatisfactionRemarks: string;
+  reportorialRemarks: string;
   updatedBy: string;
   expectedVersion: number;
 };
@@ -140,6 +147,8 @@ export async function updateEligibilityAssessment(
       total_performance_indicators = ${input.totalPerformanceIndicators},
       performance_indicators_met = ${input.performanceIndicatorsMet},
       process_improvement_percent = ${input.processImprovementPercent},
+      process_nominated_service = ${input.processNominatedService},
+      process_service_provider = ${input.processServiceProvider},
       disbursement_bur_percent = ${input.disbursementBurPercent},
       hotline_ticket_count = ${input.hotlineTicketCount},
       hotline_resolution_rate = ${input.hotlineResolutionRate},
@@ -149,6 +158,11 @@ export async function updateEligibilityAssessment(
       ccb_no_complaints = ${input.ccbNoComplaints},
       all_reports_submitted_on_time = ${input.allReportsSubmittedOnTime},
       late_reportorial_submissions = ${JSON.stringify(input.lateReportorialSubmissions)}::jsonb,
+      performance_remarks = ${input.performanceRemarks},
+      process_remarks = ${input.processRemarks},
+      financial_remarks = ${input.financialRemarks},
+      citizen_satisfaction_remarks = ${input.citizenSatisfactionRemarks},
+      reportorial_remarks = ${input.reportorialRemarks},
       updated_by = ${input.updatedBy},
       updated_at = NOW(),
       version = version + 1
