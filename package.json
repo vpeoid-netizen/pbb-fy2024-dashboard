@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "db:migrate": "tsx database/migrate.ts",
     "db:seed": "tsx database/seed.ts",
+    "db:reset": "tsx database/reset.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
