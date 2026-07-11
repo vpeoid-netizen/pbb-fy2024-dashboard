@@ -12,79 +12,55 @@ type RequirementsSectionsProps = {
   onUpdated: () => void;
 };
 
-const DIMENSION_CATEGORIES: RequirementCategory[] = [
-  "performance",
-  "process",
-  "financial",
-  "citizen-client",
-];
-
-const DIMENSION_CONFIG: {
+const OTHER_DIMENSIONS: {
   category: RequirementCategory;
   label: string;
-  shortLabel: string;
   description: string;
   icon: typeof LineChart;
-  accent: string;
 }[] = [
-  {
-    category: "performance",
-    label: "Performance Results",
-    shortLabel: "Performance",
-    description: "Congress-approved FY 2024 PREXC performance indicators across MFOs.",
-    icon: LineChart,
-    accent: "border-royal-blue/40 bg-royal-blue/5",
-  },
   {
     category: "process",
     label: "Process Results",
-    shortLabel: "Process",
-    description: "Substantial improvement in ease of transaction for a nominated critical service.",
+    description:
+      "Substantial improvement in ease of transaction for a nominated critical service.",
     icon: ClipboardList,
-    accent: "border-royal-blue/40 bg-royal-blue/5",
   },
   {
     category: "financial",
     label: "Financial Results",
-    shortLabel: "Financial",
     description: "FY 2024 Disbursement Budget Utilization Rate and supporting documents.",
     icon: Landmark,
-    accent: "border-royal-blue/40 bg-royal-blue/5",
   },
   {
     category: "citizen-client",
     label: "Citizen/Client Satisfaction Results",
-    shortLabel: "Citizen/Client Satisfaction",
-    description: "Resolution and compliance rates for Hotline #8888 and Contact Center ng Bayan.",
+    description:
+      "Resolution and compliance rates for Hotline #8888 and Contact Center ng Bayan.",
     icon: Users,
-    accent: "border-royal-blue/40 bg-royal-blue/5",
   },
 ];
 
-function RequirementCardsGrid({
+function AlignedRequirementGrid({
   items,
   disabled,
   onRequestUpdater,
   onUpdated,
   compact = false,
+  columns = "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
 }: {
   items: RequirementWithMonitoring[];
   disabled?: boolean;
   onRequestUpdater: (action: (updaterName: string) => void) => void;
   onUpdated: () => void;
   compact?: boolean;
+  columns?: string;
 }) {
   if (items.length === 0) {
     return null;
   }
 
   return (
-    <div
-      className={cn(
-        "grid gap-4",
-        compact ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
-      )}
-    >
+    <div className={cn("grid items-stretch gap-4", columns)}>
       {items.map((requirement) => (
         <RequirementCard
           key={requirement.id}
@@ -92,6 +68,8 @@ function RequirementCardsGrid({
           disabled={disabled}
           onRequestUpdater={onRequestUpdater}
           onUpdated={onUpdated}
+          hideCategoryBadge
+          compact={compact}
         />
       ))}
     </div>
@@ -112,21 +90,20 @@ export function RequirementsSections({
     );
   }
 
-  const dimensionRequirements = requirements.filter((req) =>
-    DIMENSION_CATEGORIES.includes(req.category),
-  );
+  const performanceItems = requirements.filter((req) => req.category === "performance");
+  const otherDimensionItems = OTHER_DIMENSIONS.map((dimension) => ({
+    ...dimension,
+    items: requirements.filter((req) => req.category === dimension.category),
+  })).filter((dimension) => dimension.items.length > 0);
   const agencyRequirements = requirements.filter(
     (req) => req.category === "agency-accountability",
   );
 
-  const visibleDimensions = DIMENSION_CONFIG.map((dimension) => ({
-    ...dimension,
-    items: dimensionRequirements.filter((req) => req.category === dimension.category),
-  })).filter((dimension) => dimension.items.length > 0);
+  const hasDimensions = performanceItems.length > 0 || otherDimensionItems.length > 0;
 
   return (
     <div className="space-y-8">
-      {visibleDimensions.length > 0 && (
+      {hasDimensions && (
         <section aria-labelledby="dimensions-heading">
           <div className="glass-card rounded-3xl border-2 border-royal-blue/25 p-5 md:p-6">
             <div className="border-b border-royal-blue/15 pb-5">
@@ -140,53 +117,80 @@ export function RequirementsSections({
                 Dimensions of Accountability (Results Areas)
               </h2>
               <p className="mt-2 max-w-4xl text-sm text-slate-600 dark:text-slate-300">
-                The four results areas below carry equal weight in FY 2024 PBB eligibility
-                monitoring. Each dimension is presented with the same visual priority.
+                Performance Results are monitored across four MFOs. Process, Financial, and
+                Citizen/Client Satisfaction Results are presented as equally important areas
+                below.
               </p>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-2 2xl:grid-cols-4">
-              {visibleDimensions.map((dimension) => {
-                const Icon = dimension.icon;
-                return (
-                  <div
-                    key={dimension.category}
-                    className={cn(
-                      "flex min-h-[280px] flex-col rounded-2xl border-2 p-4",
-                      dimension.accent,
-                    )}
-                  >
-                    <div className="mb-4 min-w-0">
-                      <div className="flex items-start gap-2">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-royal-blue/15 text-royal-blue">
-                          <Icon className="h-4 w-4" aria-hidden="true" />
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="break-words text-base font-semibold leading-snug text-navy dark:text-white">
-                            {dimension.label}
-                          </h3>
-                          <p className="mt-1 break-words text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                            {dimension.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-1 flex-col gap-4">
-                      {dimension.items.map((requirement) => (
-                        <RequirementCard
-                          key={requirement.id}
-                          requirement={requirement}
-                          disabled={disabled}
-                          onRequestUpdater={onRequestUpdater}
-                          onUpdated={onUpdated}
-                          hideCategoryBadge
-                        />
-                      ))}
+            <div className="mt-6 space-y-6">
+              {performanceItems.length > 0 && (
+                <div className="rounded-2xl border-2 border-royal-blue/30 bg-royal-blue/5 p-4 md:p-5">
+                  <div className="mb-4 flex items-start gap-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-royal-blue/15 text-royal-blue">
+                      <LineChart className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-semibold text-navy dark:text-white">
+                        Performance Results
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                        Four Major Final Outputs (MFOs) supporting FY 2024 PREXC performance
+                        indicators.
+                      </p>
                     </div>
                   </div>
-                );
-              })}
+                  <AlignedRequirementGrid
+                    items={performanceItems}
+                    disabled={disabled}
+                    onRequestUpdater={onRequestUpdater}
+                    onUpdated={onUpdated}
+                    compact
+                    columns="grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
+                  />
+                </div>
+              )}
+
+              {otherDimensionItems.length > 0 && (
+                <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
+                  {otherDimensionItems.map((dimension) => {
+                    const Icon = dimension.icon;
+                    return (
+                      <div
+                        key={dimension.category}
+                        className="flex min-w-0 flex-col rounded-2xl border-2 border-royal-blue/30 bg-royal-blue/5 p-4"
+                      >
+                        <div className="mb-4 flex items-start gap-3">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-royal-blue/15 text-royal-blue">
+                            <Icon className="h-4 w-4" aria-hidden="true" />
+                          </span>
+                          <div className="min-w-0">
+                            <h3 className="break-words text-base font-semibold leading-snug text-navy dark:text-white">
+                              {dimension.label}
+                            </h3>
+                            <p className="mt-1 break-words text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                              {dimension.description}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-1 flex-col">
+                          {dimension.items.map((requirement) => (
+                            <RequirementCard
+                              key={requirement.id}
+                              requirement={requirement}
+                              disabled={disabled}
+                              onRequestUpdater={onRequestUpdater}
+                              onUpdated={onUpdated}
+                              hideCategoryBadge
+                              compact
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -209,13 +213,13 @@ export function RequirementsSections({
                 </h2>
               </div>
               <p className="mt-2 max-w-4xl text-sm text-slate-600 dark:text-slate-300">
-                Documentary submissions for agency accountability requirements. These are
-                monitored separately from the four primary results areas above.
+                Documentary submissions for agency accountability requirements, monitored
+                separately from the primary results areas above.
               </p>
             </div>
 
             <div className="mt-6">
-              <RequirementCardsGrid
+              <AlignedRequirementGrid
                 items={agencyRequirements}
                 disabled={disabled}
                 onRequestUpdater={onRequestUpdater}

@@ -7,8 +7,15 @@ import type {
   AuditEntry,
   DashboardData,
   EligibilityAssessment,
+  LateReportorialSubmission,
   RequirementWithMonitoring,
 } from "@/types/pbb";
+
+type LateReportorialSubmissionRow = {
+  requirementId: string;
+  actualSubmissionDate: string;
+  reason: string;
+};
 
 type RequirementRow = {
   id: string;
@@ -42,6 +49,7 @@ type EligibilityRow = {
   ccb_resolution_rate: string | null;
   ccb_no_complaints: boolean;
   all_reports_submitted_on_time: boolean;
+  late_reportorial_submissions: LateReportorialSubmissionRow[] | null;
   updated_by: string | null;
   updated_at: string;
   version: number;
@@ -94,6 +102,27 @@ function mapRequirement(row: RequirementRow): RequirementWithMonitoring {
   };
 }
 
+function mapLateSubmissions(value: unknown): LateReportorialSubmission[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter(
+      (item): item is LateReportorialSubmissionRow =>
+        typeof item === "object" &&
+        item !== null &&
+        "requirementId" in item &&
+        "actualSubmissionDate" in item &&
+        "reason" in item,
+    )
+    .map((item) => ({
+      requirementId: item.requirementId,
+      actualSubmissionDate: item.actualSubmissionDate,
+      reason: item.reason,
+    }));
+}
+
 function mapEligibility(row: EligibilityRow): EligibilityAssessment {
   return {
     totalPerformanceIndicators: row.total_performance_indicators,
@@ -117,6 +146,7 @@ function mapEligibility(row: EligibilityRow): EligibilityAssessment {
       row.ccb_resolution_rate !== null ? Number(row.ccb_resolution_rate) : null,
     ccbNoComplaints: row.ccb_no_complaints,
     allReportsSubmittedOnTime: row.all_reports_submitted_on_time,
+    lateReportorialSubmissions: mapLateSubmissions(row.late_reportorial_submissions),
     updatedBy: row.updated_by,
     updatedAt: toIsoString(row.updated_at) ?? new Date().toISOString(),
     version: row.version,
@@ -212,6 +242,7 @@ export async function fetchEligibilityAssessment(): Promise<EligibilityAssessmen
       ccbResolutionRate: null,
       ccbNoComplaints: false,
       allReportsSubmittedOnTime: true,
+      lateReportorialSubmissions: [],
       updatedBy: null,
       updatedAt: new Date().toISOString(),
       version: 1,

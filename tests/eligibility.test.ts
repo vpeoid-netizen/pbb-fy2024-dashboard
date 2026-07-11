@@ -83,10 +83,36 @@ describe("total score and PBB rate", () => {
     ccbResolutionRate: 100,
     ccbNoComplaints: false,
     allReportsSubmittedOnTime: true,
+    lateReportorialSubmissions: [],
     updatedBy: null,
     updatedAt: new Date().toISOString(),
     version: 1,
   };
+
+  it("returns zero score when no self-rating inputs are provided", () => {
+    const emptyAssessment: EligibilityAssessment = {
+      totalPerformanceIndicators: null,
+      performanceIndicatorsMet: null,
+      processImprovementPercent: null,
+      disbursementBurPercent: null,
+      hotlineTicketCount: null,
+      hotlineResolutionRate: null,
+      hotlineNoComplaints: false,
+      ccbTicketCount: null,
+      ccbResolutionRate: null,
+      ccbNoComplaints: false,
+      allReportsSubmittedOnTime: true,
+      lateReportorialSubmissions: [],
+      updatedBy: null,
+      updatedAt: new Date().toISOString(),
+      version: 1,
+    };
+
+    const result = calculateEligibilityResult(emptyAssessment);
+    expect(result.totalScore).toBe(0);
+    expect(result.status).toBe("Not Yet Assessed");
+    expect(result.hasInputs).toBe(false);
+  });
 
   it("calculates indicative eligibility at 70 points or higher", () => {
     const result = calculateEligibilityResult(baseAssessment);

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { REPORTORIAL_REQUIREMENT_IDS } from "@/data/reportorialRequirements";
 
 export const updaterNameSchema = z
   .string()
@@ -23,6 +24,16 @@ export const requirementPatchSchema = z
     message: "At least one editable field must be provided.",
   });
 
+export const lateReportorialSubmissionSchema = z.object({
+  requirementId: z
+    .string()
+    .refine((value) => REPORTORIAL_REQUIREMENT_IDS.includes(value), {
+      message: "Invalid reportorial requirement ID.",
+    }),
+  actualSubmissionDate: z.string().min(1, "Actual submission date is required."),
+  reason: z.string().trim().min(1, "Reason or remarks are required.").max(1000),
+});
+
 export const eligibilityPatchSchema = z
   .object({
     totalPerformanceIndicators: z.number().int().min(1).nullable(),
@@ -36,6 +47,7 @@ export const eligibilityPatchSchema = z
     ccbResolutionRate: z.number().min(0).max(100).nullable(),
     ccbNoComplaints: z.boolean(),
     allReportsSubmittedOnTime: z.boolean(),
+    lateReportorialSubmissions: z.array(lateReportorialSubmissionSchema),
     updatedBy: updaterNameSchema,
     expectedVersion: z.number().int().positive(),
   })
@@ -50,6 +62,24 @@ export const eligibilityPatchSchema = z
         code: z.ZodIssueCode.custom,
         message: "Indicators met cannot exceed total indicators.",
         path: ["performanceIndicatorsMet"],
+      });
+    }
+
+    if (!data.allReportsSubmittedOnTime && data.lateReportorialSubmissions.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Select at least one late reportorial requirement and provide its actual submission date and reason.",
+        path: ["lateReportorialSubmissions"],
+      });
+    }
+
+    if (data.allReportsSubmittedOnTime && data.lateReportorialSubmissions.length > 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Late reportorial submissions must be empty when all requirements were submitted on time.",
+        path: ["lateReportorialSubmissions"],
       });
     }
   });

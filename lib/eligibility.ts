@@ -24,6 +24,21 @@ export function calculateSummary(submittedCount: number, totalCount: number): Mo
   };
 }
 
+export function hasEligibilityInputs(assessment: EligibilityAssessment): boolean {
+  return (
+    assessment.totalPerformanceIndicators !== null ||
+    assessment.performanceIndicatorsMet !== null ||
+    assessment.processImprovementPercent !== null ||
+    assessment.disbursementBurPercent !== null ||
+    assessment.hotlineNoComplaints ||
+    assessment.ccbNoComplaints ||
+    assessment.hotlineTicketCount !== null ||
+    assessment.hotlineResolutionRate !== null ||
+    assessment.ccbTicketCount !== null ||
+    assessment.ccbResolutionRate !== null
+  );
+}
+
 export function calculatePerformanceRating(
   total: number | null,
   met: number | null,
@@ -109,9 +124,33 @@ export function calculateAdjustedPbbRate(
   return baseRate * 0.95;
 }
 
+function createEmptyEligibilityResult(): EligibilityResult {
+  return {
+    criteria: [
+      { name: "Performance Results", rating: 0, points: 0, maxPoints: 25 },
+      { name: "Process Results", rating: 0, points: 0, maxPoints: 25 },
+      { name: "Financial Results", rating: 0, points: 0, maxPoints: 25 },
+      { name: "Hotline #8888", rating: 0, points: 0, maxPoints: 12.5 },
+      { name: "Contact Center ng Bayan", rating: 0, points: 0, maxPoints: 12.5 },
+    ],
+    totalScore: 0,
+    maxScore: 100,
+    status: "Not Yet Assessed",
+    hasInputs: false,
+    hasIsolationRisk: false,
+    isolationRiskCriteria: [],
+    basePbbRatePercentOfMbs: null,
+    adjustedPbbRatePercentOfMbs: null,
+  };
+}
+
 export function calculateEligibilityResult(
   assessment: EligibilityAssessment,
 ): EligibilityResult {
+  if (!hasEligibilityInputs(assessment)) {
+    return createEmptyEligibilityResult();
+  }
+
   const performanceRating = calculatePerformanceRating(
     assessment.totalPerformanceIndicators,
     assessment.performanceIndicatorsMet,
@@ -181,6 +220,7 @@ export function calculateEligibilityResult(
     totalScore,
     maxScore: 100,
     status,
+    hasInputs: true,
     hasIsolationRisk,
     isolationRiskCriteria,
     basePbbRatePercentOfMbs,

@@ -58,6 +58,12 @@ export type AuditEntry = {
   createdAt: string;
 };
 
+export type LateReportorialSubmission = {
+  requirementId: string;
+  actualSubmissionDate: string;
+  reason: string;
+};
+
 export type EligibilityAssessment = {
   totalPerformanceIndicators: number | null;
   performanceIndicatorsMet: number | null;
@@ -70,6 +76,7 @@ export type EligibilityAssessment = {
   ccbResolutionRate: number | null;
   ccbNoComplaints: boolean;
   allReportsSubmittedOnTime: boolean;
+  lateReportorialSubmissions: LateReportorialSubmission[];
   updatedBy: string | null;
   updatedAt: string;
   version: number;
@@ -86,7 +93,8 @@ export type EligibilityResult = {
   criteria: CriterionRating[];
   totalScore: number;
   maxScore: number;
-  status: "Indicatively Eligible" | "Below Eligibility Threshold";
+  status: "Indicatively Eligible" | "Below Eligibility Threshold" | "Not Yet Assessed";
+  hasInputs: boolean;
   hasIsolationRisk: boolean;
   isolationRiskCriteria: string[];
   basePbbRatePercentOfMbs: number | null;

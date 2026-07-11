@@ -37,6 +37,7 @@ type RequirementCardProps = {
   onRequestUpdater: (action: (updaterName: string) => void) => void;
   onUpdated: () => void;
   hideCategoryBadge?: boolean;
+  compact?: boolean;
 };
 
 export function RequirementCard({
@@ -45,6 +46,7 @@ export function RequirementCard({
   onRequestUpdater,
   onUpdated,
   hideCategoryBadge = false,
+  compact = false,
 }: RequirementCardProps) {
   const [expanded, setExpanded] = useState(false);
   const Icon = categoryIcons[requirement.category];
@@ -59,82 +61,101 @@ export function RequirementCard({
   };
 
   return (
-    <article className="glass-card flex h-full min-w-0 flex-col overflow-hidden rounded-3xl p-5">
-      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1 space-y-2">
-          {!hideCategoryBadge && (
-            <span className="inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full bg-light-blue/70 px-3 py-1 text-xs font-medium text-navy dark:bg-slate-800 dark:text-blue-100">
-              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{getCategoryLabel(requirement.category)}</span>
-            </span>
-          )}
-          <h3 className="break-words text-lg font-semibold leading-snug text-navy dark:text-white">
-            {requirement.title}
-          </h3>
-        </div>
-        <span
-          className={cn(
-            "inline-flex shrink-0 self-start whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold",
-            requirement.submitted
-              ? "bg-success/15 text-success"
-              : "bg-warning/15 text-warning",
-          )}
-        >
-          {requirement.submitted ? "Submitted" : "Pending"}
-        </span>
-      </div>
-
-      <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-        {requirement.description}
-      </p>
-
-      <div className="mt-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setExpanded((value) => !value)}
-          aria-expanded={expanded}
-        >
-          Documentary checklist
-          {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </Button>
-        {expanded && (
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
-            {requirement.documents.map((doc) => (
-              <li key={doc}>{doc}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <dl className="mt-4 space-y-2 text-sm">
-        <div>
-          <dt className="font-medium text-navy dark:text-white">Validating agency</dt>
-          <dd className="text-slate-600 dark:text-slate-300">
-            {requirement.validatingAgency}
-          </dd>
-        </div>
-        <div>
-          <dt className="font-medium text-navy dark:text-white">Deadline</dt>
-          <dd className="text-slate-600 dark:text-slate-300">{requirement.deadline}</dd>
-        </div>
-      </dl>
-
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <Button variant="default" className="flex-1" asChild>
-          <a
-            href={requirement.folderUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+    <article
+      className={cn(
+        "glass-card flex h-full min-w-0 flex-col overflow-hidden rounded-3xl",
+        compact ? "p-4" : "p-5",
+      )}
+    >
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1 space-y-2">
+            {!hideCategoryBadge && (
+              <span className="inline-flex max-w-full items-center gap-2 overflow-hidden rounded-full bg-light-blue/70 px-3 py-1 text-xs font-medium text-navy dark:bg-slate-800 dark:text-blue-100">
+                <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                <span className="truncate">{getCategoryLabel(requirement.category)}</span>
+              </span>
+            )}
+            <h3
+              className={cn(
+                "break-words font-semibold leading-snug text-navy dark:text-white",
+                compact ? "text-base" : "text-lg",
+              )}
+            >
+              {requirement.title}
+            </h3>
+          </div>
+          <span
+            className={cn(
+              "inline-flex max-w-full shrink-0 self-start whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold",
+              requirement.submitted
+                ? "bg-success/15 text-success"
+                : "bg-warning/15 text-warning",
+            )}
           >
-            <FolderOpen className="h-4 w-4" />
-            Open Submission Folder
-            <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+            {requirement.submitted ? "Submitted" : "Pending"}
+          </span>
+        </div>
+
+        <p
+          className={cn(
+            "mt-3 break-words text-slate-600 dark:text-slate-300",
+            compact ? "text-xs" : "text-sm",
+          )}
+        >
+          {requirement.description}
+        </p>
+
+        <div className="mt-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setExpanded((value) => !value)}
+            aria-expanded={expanded}
+          >
+            Documentary checklist
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+          {expanded && (
+            <ul className="mt-2 list-disc space-y-1 break-words pl-5 text-sm text-slate-600 dark:text-slate-300">
+              {requirement.documents.map((doc) => (
+                <li key={doc}>{doc}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <dl className={cn("mt-4 space-y-2", compact ? "text-xs" : "text-sm")}>
+          <div>
+            <dt className="font-medium text-navy dark:text-white">Validating agency</dt>
+            <dd className="break-words text-slate-600 dark:text-slate-300">
+              {requirement.validatingAgency}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium text-navy dark:text-white">Deadline</dt>
+            <dd className="break-words text-slate-600 dark:text-slate-300">
+              {requirement.deadline}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="mt-auto flex w-full flex-col gap-2 pt-4">
+        <Button variant="default" className="h-10 w-full min-w-0 justify-center px-3 text-sm" asChild>
+          <a href={requirement.folderUrl} target="_blank" rel="noopener noreferrer">
+            <FolderOpen className="h-4 w-4 shrink-0" />
+            <span className="truncate">Open Submission Folder</span>
+            <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-70" />
           </a>
         </Button>
-        <Button variant="secondary" onClick={() => void handleCopyLink()}>
-          <Copy className="h-4 w-4" />
-          Copy Folder Link
+        <Button
+          variant="secondary"
+          className="h-10 w-full min-w-0 justify-center px-3 text-sm"
+          onClick={() => void handleCopyLink()}
+        >
+          <Copy className="h-4 w-4 shrink-0" />
+          <span className="truncate">Copy Folder Link</span>
         </Button>
       </div>
 
@@ -154,12 +175,12 @@ export function RequirementCard({
       </div>
 
       <div className="mt-4 space-y-1 text-xs text-slate-500">
-        <p className="flex items-center gap-1">
-          <CheckCircle2 className="h-3.5 w-3.5" />
+        <p className="flex items-center gap-1 break-words">
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
           Submitted: {formatManilaDateTime(requirement.submittedAt)}
         </p>
-        <p>Last updated: {formatManilaDateTime(requirement.updatedAt)}</p>
-        <p>Updated by: {requirement.updatedBy ?? "—"}</p>
+        <p className="break-words">Last updated: {formatManilaDateTime(requirement.updatedAt)}</p>
+        <p className="break-words">Updated by: {requirement.updatedBy ?? "—"}</p>
       </div>
 
       <div className="mt-4 border-t border-white/50 pt-4 dark:border-slate-700">

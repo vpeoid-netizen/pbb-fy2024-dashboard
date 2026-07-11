@@ -6,7 +6,7 @@ import {
 } from "@/lib/dashboard-queries";
 import { calculateSummary } from "@/lib/eligibility";
 import { TOTAL_REQUIREMENTS } from "@/data/pbbRequirements";
-import type { RequirementWithMonitoring } from "@/types/pbb";
+import type { LateReportorialSubmission, RequirementWithMonitoring } from "@/types/pbb";
 
 type UpdateRequirementInput = {
   requirementId: string;
@@ -126,6 +126,7 @@ type UpdateEligibilityInput = {
   ccbResolutionRate: number | null;
   ccbNoComplaints: boolean;
   allReportsSubmittedOnTime: boolean;
+  lateReportorialSubmissions: LateReportorialSubmission[];
   updatedBy: string;
   expectedVersion: number;
 };
@@ -147,6 +148,7 @@ export async function updateEligibilityAssessment(
       ccb_resolution_rate = ${input.ccbResolutionRate},
       ccb_no_complaints = ${input.ccbNoComplaints},
       all_reports_submitted_on_time = ${input.allReportsSubmittedOnTime},
+      late_reportorial_submissions = ${JSON.stringify(input.lateReportorialSubmissions)}::jsonb,
       updated_by = ${input.updatedBy},
       updated_at = NOW(),
       version = version + 1

@@ -7,8 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { reportorialRequirements } from "@/data/reportorialRequirements";
 import { formatManilaDateTime } from "@/lib/date-time";
-import type { EligibilityAssessment, EligibilityResult } from "@/types/pbb";
+import type {
+  EligibilityAssessment,
+  EligibilityResult,
+  LateReportorialSubmission,
+} from "@/types/pbb";
 
 type EligibilityCalculatorProps = {
   assessment: EligibilityAssessment;
@@ -37,6 +43,42 @@ export function EligibilityCalculator({
     value: EligibilityAssessment[K],
   ) => {
     setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const updateLateSubmission = (
+    requirementId: string,
+    patch: Partial<LateReportorialSubmission>,
+  ) => {
+    setForm((current) => ({
+      ...current,
+      lateReportorialSubmissions: current.lateReportorialSubmissions.map((entry) =>
+        entry.requirementId === requirementId ? { ...entry, ...patch } : entry,
+      ),
+    }));
+  };
+
+  const toggleLateRequirement = (requirementId: string, isLate: boolean) => {
+    setForm((current) => {
+      if (isLate) {
+        if (current.lateReportorialSubmissions.some((entry) => entry.requirementId === requirementId)) {
+          return current;
+        }
+        return {
+          ...current,
+          lateReportorialSubmissions: [
+            ...current.lateReportorialSubmissions,
+            { requirementId, actualSubmissionDate: "", reason: "" },
+          ],
+        };
+      }
+
+      return {
+        ...current,
+        lateReportorialSubmissions: current.lateReportorialSubmissions.filter(
+          (entry) => entry.requirementId !== requirementId,
+        ),
+      };
+    });
   };
 
   const save = useCallback(() => {
@@ -76,11 +118,13 @@ export function EligibilityCalculator({
   }, [assessment.version, form, onRequestUpdater, onUpdated]);
 
   const statusClass =
-    result.status === "Indicatively Eligible"
-      ? result.hasIsolationRisk
-        ? "text-warning"
-        : "text-success"
-      : "text-danger";
+    result.status === "Not Yet Assessed"
+      ? "text-slate-600 dark:text-slate-300"
+      : result.status === "Indicatively Eligible"
+        ? result.hasIsolationRisk
+          ? "text-warning"
+          : "text-success"
+        : "text-danger";
 
   return (
     <section className="glass-card no-print rounded-3xl p-5 md:p-6">
@@ -307,19 +351,114 @@ export function EligibilityCalculator({
             </div>
           </fieldset>
 
-          <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/60 p-4 dark:border-slate-700">
-            <Label htmlFor="reports-on-time">
-              All reportorial requirements were submitted on time
-            </Label>
-            <Switch
-              id="reports-on-time"
-              checked={form.allReportsSubmittedOnTime}
-              onCheckedChange={(checked) =>
-                updateField("allReportsSubmittedOnTime", checked)
-              }
-              disabled={disabled}
-            />
-          </div>
+          <fieldset className="space-y-4 rounded-2xl border border-white/60 p-4 dark:border-slate-700">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Reportorial Submission Timeliness
+            </legend>
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+              <Label htmlFor="reports-on-time" className="leading-snug">
+                All reportorial requirements were submitted on time
+              </Label>
+              <Switch
+                id="reports-on-time"
+                checked={form.allReportsSubmittedOnTime}
+                onCheckedChange={(checked) => {
+                  setForm((current) => ({
+                    ...current,
+                    allReportsSubmittedOnTime: checked,
+                    lateReportorialSubmissions: checked
+                      ? []
+                      : current.lateReportorialSubmissions,
+                  }));
+                }}
+                disabled={disabled}
+              />
+            </div>
+
+            {!form.allReportsSubmittedOnTime && (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Select each reportorial requirement that was not submitted on time, then
+                  provide the actual submission date and reason or remarks.
+                </p>
+                {reportorialRequirements.map((requirement) => {
+                  const lateEntry = form.lateReportorialSubmissions.find(
+                    (entry) => entry.requirementId === requirement.id,
+                  );
+                  const isLate = Boolean(lateEntry);
+
+                  return (
+                    <div
+                      key={requirement.id}
+                      className="rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="break-words text-sm font-medium text-navy dark:text-white">
+                            {requirement.shortTitle}
+                          </p>
+                          <p className="mt-1 break-words text-xs text-slate-500">
+                            {requirement.deadline}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <Label htmlFor={`late-${requirement.id}`} className="text-xs">
+                            Late
+                          </Label>
+                          <Switch
+                            id={`late-${requirement.id}`}
+                            checked={isLate}
+                            onCheckedChange={(checked) =>
+                              toggleLateRequirement(requirement.id, checked)
+                            }
+                            disabled={disabled}
+                          />
+                        </div>
+                      </div>
+
+                      {isLate && lateEntry && (
+                        <div className="mt-4 space-y-3 border-t border-white/60 pt-4 dark:border-slate-700">
+                          <div>
+                            <Label htmlFor={`late-date-${requirement.id}`}>
+                              Date of actual submission
+                            </Label>
+                            <Input
+                              id={`late-date-${requirement.id}`}
+                              type="date"
+                              value={lateEntry.actualSubmissionDate}
+                              onChange={(event) =>
+                                updateLateSubmission(requirement.id, {
+                                  actualSubmissionDate: event.target.value,
+                                })
+                              }
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`late-reason-${requirement.id}`}>
+                              Reason why / remarks
+                            </Label>
+                            <Textarea
+                              id={`late-reason-${requirement.id}`}
+                              value={lateEntry.reason}
+                              onChange={(event) =>
+                                updateLateSubmission(requirement.id, {
+                                  reason: event.target.value.slice(0, 1000),
+                                })
+                              }
+                              placeholder="Explain why the requirement was submitted late."
+                              rows={3}
+                              disabled={disabled}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </fieldset>
 
           <Button onClick={save} disabled={disabled || isSaving}>
             {isSaving ? "Saving…" : "Save Eligibility Assessment"}
@@ -334,9 +473,14 @@ export function EligibilityCalculator({
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-300">Total score</p>
             <p className="text-3xl font-bold text-navy dark:text-white">
-              {result.totalScore.toFixed(1)} / {result.maxScore}
+              {result.totalScore.toFixed(2)} / {result.maxScore.toFixed(2)}
             </p>
             <p className={`mt-1 text-sm font-semibold ${statusClass}`}>{result.status}</p>
+            {!result.hasInputs && (
+              <p className="mt-1 text-xs text-slate-500">
+                Enter self-rating inputs to calculate an indicative score.
+              </p>
+            )}
           </div>
           <Progress value={result.totalScore} aria-label="Eligibility score progress" />
 
@@ -344,12 +488,13 @@ export function EligibilityCalculator({
             {result.criteria.map((criterion) => (
               <li
                 key={criterion.name}
-                className="flex items-center justify-between rounded-xl bg-white/70 px-3 py-2 dark:bg-slate-900/60"
+                className="flex flex-col gap-1 rounded-xl bg-white/70 px-3 py-2 sm:flex-row sm:items-center sm:justify-between dark:bg-slate-900/60"
               >
-                <span>{criterion.name}</span>
-                <span>
-                  Rating {criterion.rating} · {criterion.points.toFixed(1)} /{" "}
-                  {criterion.maxPoints} pts
+                <span className="min-w-0 break-words">{criterion.name}</span>
+                <span className="shrink-0 whitespace-nowrap">
+                  {criterion.rating > 0
+                    ? `Rating ${criterion.rating} · ${criterion.points.toFixed(2)} / ${criterion.maxPoints.toFixed(2)} pts`
+                    : `Not yet assessed · 0.00 / ${criterion.maxPoints.toFixed(2)} pts`}
                 </span>
               </li>
             ))}
