@@ -55,8 +55,8 @@ type EligibilityRow = {
   performance_remarks: string | null;
   process_remarks: string | null;
   financial_remarks: string | null;
-  citizen_satisfaction_remarks: string | null;
-  reportorial_remarks: string | null;
+  hotline_remarks: string | null;
+  ccb_remarks: string | null;
   updated_by: string | null;
   updated_at: string;
   version: number;
@@ -159,8 +159,8 @@ function mapEligibility(row: EligibilityRow): EligibilityAssessment {
     performanceRemarks: row.performance_remarks ?? "",
     processRemarks: row.process_remarks ?? "",
     financialRemarks: row.financial_remarks ?? "",
-    citizenSatisfactionRemarks: row.citizen_satisfaction_remarks ?? "",
-    reportorialRemarks: row.reportorial_remarks ?? "",
+    hotlineRemarks: row.hotline_remarks ?? "",
+    ccbRemarks: row.ccb_remarks ?? "",
     updatedBy: row.updated_by,
     updatedAt: toIsoString(row.updated_at) ?? new Date().toISOString(),
     version: row.version,
@@ -262,8 +262,8 @@ export async function fetchEligibilityAssessment(): Promise<EligibilityAssessmen
       performanceRemarks: "",
       processRemarks: "",
       financialRemarks: "",
-      citizenSatisfactionRemarks: "",
-      reportorialRemarks: "",
+      hotlineRemarks: "",
+      ccbRemarks: "",
       updatedBy: null,
       updatedAt: new Date().toISOString(),
       version: 1,

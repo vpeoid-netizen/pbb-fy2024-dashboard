@@ -50,7 +50,7 @@ function SectionRemarks({
         placeholder={placeholder}
         rows={3}
         disabled={disabled}
-        className="min-h-[84px] resize-y bg-white dark:bg-slate-950"
+        className="min-h-[96px] text-base sm:text-sm"
       />
       <p className="text-xs text-slate-500">{1000 - value.length} characters remaining</p>
     </div>
@@ -150,8 +150,8 @@ export function EligibilityCalculator({
           performanceRemarks: form.performanceRemarks,
           processRemarks: form.processRemarks,
           financialRemarks: form.financialRemarks,
-          citizenSatisfactionRemarks: form.citizenSatisfactionRemarks,
-          reportorialRemarks: form.reportorialRemarks,
+          hotlineRemarks: form.hotlineRemarks,
+          ccbRemarks: form.ccbRemarks,
           updatedBy: updaterName,
           expectedVersion: assessment.version,
         };
@@ -208,203 +208,175 @@ export function EligibilityCalculator({
           : "text-success"
         : "text-danger";
 
-  const fieldsetClassName =
-    "flex h-full flex-col gap-3 rounded-2xl border border-royal-blue/20 bg-white/80 p-3.5 dark:border-slate-600/50 dark:bg-slate-900/50 md:p-4";
-
   return (
-    <section className="glass-card no-print rounded-3xl p-4 md:p-5">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-        <div className="min-w-0 flex-1">
-          <h2 className="text-xl font-semibold text-navy dark:text-white">
-            Indicative Self-Rating of FY 2024 PBB Eligibility
-          </h2>
-          <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300">
-            This self-rating is for internal planning and monitoring only. Final eligibility,
-            exclusions, validation results, and applicable PBB rates remain subject to the
-            official Final Eligibility Assessment.
-          </p>
-        </div>
+    <section className="glass-card no-print rounded-3xl p-5 md:p-6">
+      <h2 className="text-xl font-semibold text-navy dark:text-white">
+        Indicative Self-Rating of FY 2024 PBB Eligibility
+      </h2>
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+        This self-rating is for internal planning and monitoring only. Final eligibility,
+        exclusions, validation results, and applicable PBB rates remain subject to the
+        official Final Eligibility Assessment.
+      </p>
 
-        <div className="w-full shrink-0 rounded-2xl border border-white/60 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/50 xl:w-72">
-          <p className="text-sm text-slate-600 dark:text-slate-300">Total score</p>
-          <p className="text-2xl font-bold text-navy dark:text-white">
-            {displayResult.totalScore.toFixed(2)} / {displayResult.maxScore.toFixed(2)}
-          </p>
-          <p className={`mt-1 text-sm font-semibold ${statusClass}`}>{displayResult.status}</p>
-          {!displayResult.hasInputs && (
-            <p className="mt-1 text-xs text-slate-500">
-              Enter self-rating inputs to calculate an indicative score.
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5">
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Performance Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate accomplishment of applicable FY 2024 performance indicators.
             </p>
-          )}
-          <Progress
-            value={displayResult.totalScore}
-            className="mt-3"
-            aria-label="Eligibility score progress"
-          />
-        </div>
-      </div>
-
-      <div className="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-12">
-        <fieldset className={`${fieldsetClassName} lg:col-span-1 xl:col-span-6`}>
-          <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
-            Performance Results
-          </legend>
-          <p className="text-xs text-slate-600 dark:text-slate-300">
-            Rate accomplishment of applicable FY 2024 performance indicators.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 sm:items-end">
-            <div className="flex flex-col">
-              <Label htmlFor="total-indicators" className="mb-2 min-h-[3rem] leading-snug">
-                Total applicable FY 2024 performance indicators
-              </Label>
-              <Input
-                id="total-indicators"
-                type="number"
-                min={1}
-                value={form.totalPerformanceIndicators ?? ""}
-                onChange={(event) =>
-                  updateField(
-                    "totalPerformanceIndicators",
-                    event.target.value ? Number(event.target.value) : null,
-                  )
-                }
-                disabled={disabled}
-              />
+            <div className="grid gap-3 sm:grid-cols-2 sm:items-end">
+              <div className="flex flex-col">
+                <Label htmlFor="total-indicators" className="mb-2 min-h-[3rem] leading-snug">
+                  Total applicable FY 2024 performance indicators
+                </Label>
+                <Input
+                  id="total-indicators"
+                  type="number"
+                  min={1}
+                  value={form.totalPerformanceIndicators ?? ""}
+                  onChange={(event) =>
+                    updateField(
+                      "totalPerformanceIndicators",
+                      event.target.value ? Number(event.target.value) : null,
+                    )
+                  }
+                  disabled={disabled}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Label htmlFor="indicators-met" className="mb-2 min-h-[3rem] leading-snug">
+                  Number of indicators fully met
+                </Label>
+                <Input
+                  id="indicators-met"
+                  type="number"
+                  min={0}
+                  value={form.performanceIndicatorsMet ?? ""}
+                  onChange={(event) =>
+                    updateField(
+                      "performanceIndicatorsMet",
+                      event.target.value ? Number(event.target.value) : null,
+                    )
+                  }
+                  disabled={disabled}
+                />
+              </div>
             </div>
-            <div className="flex flex-col">
-              <Label htmlFor="indicators-met" className="mb-2 min-h-[3rem] leading-snug">
-                Number of indicators fully met
+            <SectionRemarks
+              id="performance-remarks"
+              value={form.performanceRemarks}
+              onChange={(value) => updateField("performanceRemarks", value)}
+              disabled={disabled}
+            />
+          </fieldset>
+
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Process Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate improvement in the nominated critical service under the Citizen&apos;s Charter.
+            </p>
+            <div>
+              <Label htmlFor="process-improvement">
+                Percentage improvement in nominated critical service
               </Label>
               <Input
-                id="indicators-met"
+                id="process-improvement"
                 type="number"
                 min={0}
-                value={form.performanceIndicatorsMet ?? ""}
+                step="0.01"
+                value={form.processImprovementPercent ?? ""}
                 onChange={(event) =>
                   updateField(
-                    "performanceIndicatorsMet",
+                    "processImprovementPercent",
                     event.target.value ? Number(event.target.value) : null,
                   )
                 }
                 disabled={disabled}
               />
             </div>
-          </div>
-          <SectionRemarks
-            id="performance-remarks"
-            value={form.performanceRemarks}
-            onChange={(value) => updateField("performanceRemarks", value)}
-            disabled={disabled}
-          />
-        </fieldset>
-
-        <fieldset className={`${fieldsetClassName} lg:col-span-1 xl:col-span-6`}>
-          <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
-            Process Results
-          </legend>
-          <p className="text-xs text-slate-600 dark:text-slate-300">
-            Rate improvement in the nominated critical service under the Citizen&apos;s Charter.
-          </p>
-          <div>
-            <Label htmlFor="process-improvement">
-              Percentage improvement in nominated critical service
-            </Label>
-            <Input
-              id="process-improvement"
-              type="number"
-              min={0}
-              step="0.01"
-              value={form.processImprovementPercent ?? ""}
-              onChange={(event) =>
-                updateField(
-                  "processImprovementPercent",
-                  event.target.value ? Number(event.target.value) : null,
-                )
-              }
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="process-nominated-service">Nominated Service</Label>
+                <Input
+                  id="process-nominated-service"
+                  value={form.processNominatedService}
+                  onChange={(event) =>
+                    updateField("processNominatedService", event.target.value.slice(0, 300))
+                  }
+                  placeholder="Enter the nominated critical service"
+                  disabled={disabled}
+                />
+              </div>
+              <div>
+                <Label htmlFor="process-service-provider">Service Provider</Label>
+                <Input
+                  id="process-service-provider"
+                  value={form.processServiceProvider}
+                  onChange={(event) =>
+                    updateField("processServiceProvider", event.target.value.slice(0, 300))
+                  }
+                  placeholder="Enter the office or unit providing the service"
+                  disabled={disabled}
+                />
+              </div>
+            </div>
+            <SectionRemarks
+              id="process-remarks"
+              value={form.processRemarks}
+              onChange={(value) => updateField("processRemarks", value)}
               disabled={disabled}
-              className="mt-1.5"
             />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          </fieldset>
+
+          <fieldset className="space-y-3 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Financial Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate FY 2024 Disbursement Budget Utilization (BUR) performance.
+            </p>
             <div>
-              <Label htmlFor="process-nominated-service">Nominated Service</Label>
+              <Label htmlFor="bur-percent">FY 2024 Disbursement BUR percentage</Label>
               <Input
-                id="process-nominated-service"
-                value={form.processNominatedService}
+                id="bur-percent"
+                type="number"
+                min={0}
+                max={100}
+                step="0.01"
+                value={form.disbursementBurPercent ?? ""}
                 onChange={(event) =>
-                  updateField("processNominatedService", event.target.value.slice(0, 300))
+                  updateField(
+                    "disbursementBurPercent",
+                    event.target.value ? Number(event.target.value) : null,
+                  )
                 }
-                placeholder="Enter the nominated critical service"
                 disabled={disabled}
-                className="mt-1.5"
               />
             </div>
-            <div>
-              <Label htmlFor="process-service-provider">Service Provider</Label>
-              <Input
-                id="process-service-provider"
-                value={form.processServiceProvider}
-                onChange={(event) =>
-                  updateField("processServiceProvider", event.target.value.slice(0, 300))
-                }
-                placeholder="Enter the office or unit providing the service"
-                disabled={disabled}
-                className="mt-1.5"
-              />
-            </div>
-          </div>
-          <SectionRemarks
-            id="process-remarks"
-            value={form.processRemarks}
-            onChange={(value) => updateField("processRemarks", value)}
-            disabled={disabled}
-          />
-        </fieldset>
-
-        <fieldset className={`${fieldsetClassName} lg:col-span-1 xl:col-span-4`}>
-          <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
-            Financial Results
-          </legend>
-          <p className="text-xs text-slate-600 dark:text-slate-300">
-            Rate FY 2024 Disbursement Budget Utilization (BUR) performance.
-          </p>
-          <div>
-            <Label htmlFor="bur-percent">FY 2024 Disbursement BUR percentage</Label>
-            <Input
-              id="bur-percent"
-              type="number"
-              min={0}
-              max={100}
-              step="0.01"
-              value={form.disbursementBurPercent ?? ""}
-              onChange={(event) =>
-                updateField(
-                  "disbursementBurPercent",
-                  event.target.value ? Number(event.target.value) : null,
-                )
-              }
+            <SectionRemarks
+              id="financial-remarks"
+              value={form.financialRemarks}
+              onChange={(value) => updateField("financialRemarks", value)}
               disabled={disabled}
-              className="mt-1.5"
             />
-          </div>
-          <SectionRemarks
-            id="financial-remarks"
-            value={form.financialRemarks}
-            onChange={(value) => updateField("financialRemarks", value)}
-            disabled={disabled}
-          />
-        </fieldset>
+          </fieldset>
 
-        <fieldset className={`${fieldsetClassName} lg:col-span-2 xl:col-span-8`}>
-          <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
-            Citizen/Client Satisfaction Results
-          </legend>
-          <p className="text-xs text-slate-600 dark:text-slate-300">
-            Rate complaint resolution and compliance for Hotline #8888 and Contact Center ng Bayan.
-          </p>
+          <fieldset className="space-y-4 rounded-2xl border-2 border-royal-blue/25 bg-royal-blue/5 p-4">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Citizen/Client Satisfaction Results
+            </legend>
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Rate complaint resolution and compliance for Hotline #8888 and Contact Center ng
+              Bayan.
+            </p>
 
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="space-y-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+            <div className="space-y-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Hotline #8888
               </p>
@@ -432,7 +404,6 @@ export function EligibilityCalculator({
                       )
                     }
                     disabled={disabled || form.hotlineNoComplaints}
-                    className="mt-1.5"
                   />
                 </div>
                 <div>
@@ -451,13 +422,19 @@ export function EligibilityCalculator({
                       )
                     }
                     disabled={disabled || form.hotlineNoComplaints}
-                    className="mt-1.5"
                   />
                 </div>
               </div>
+              <SectionRemarks
+                id="hotline-remarks"
+                value={form.hotlineRemarks}
+                onChange={(value) => updateField("hotlineRemarks", value)}
+                disabled={disabled}
+                placeholder="Add notes specific to Hotline #8888 complaint handling."
+              />
             </div>
 
-            <div className="space-y-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40">
+            <div className="space-y-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Contact Center ng Bayan
               </p>
@@ -485,7 +462,6 @@ export function EligibilityCalculator({
                       )
                     }
                     disabled={disabled || form.ccbNoComplaints}
-                    className="mt-1.5"
                   />
                 </div>
                 <div>
@@ -504,142 +480,135 @@ export function EligibilityCalculator({
                       )
                     }
                     disabled={disabled || form.ccbNoComplaints}
-                    className="mt-1.5"
                   />
                 </div>
               </div>
+              <SectionRemarks
+                id="ccb-remarks"
+                value={form.ccbRemarks}
+                onChange={(value) => updateField("ccbRemarks", value)}
+                disabled={disabled}
+                placeholder="Add notes specific to Contact Center ng Bayan complaint handling."
+              />
             </div>
-          </div>
-          <SectionRemarks
-            id="citizen-remarks"
-            value={form.citizenSatisfactionRemarks}
-            onChange={(value) => updateField("citizenSatisfactionRemarks", value)}
-            disabled={disabled}
-          />
-        </fieldset>
+          </fieldset>
 
-        <fieldset className={`${fieldsetClassName} lg:col-span-2 xl:col-span-12`}>
-          <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
-            Reportorial Submission Timeliness
-          </legend>
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40">
-            <Label htmlFor="reports-on-time" className="leading-snug">
-              All reportorial requirements were submitted on time
-            </Label>
-            <Switch
-              id="reports-on-time"
-              checked={form.allReportsSubmittedOnTime}
-              onCheckedChange={(checked) => {
-                setIsDirty(true);
-                setForm((current) => ({
-                  ...current,
-                  allReportsSubmittedOnTime: checked,
-                  lateReportorialSubmissions: checked ? [] : current.lateReportorialSubmissions,
-                }));
-              }}
-              disabled={disabled}
-            />
-          </div>
+          <fieldset className="space-y-4 rounded-2xl border border-white/60 p-4 dark:border-slate-700">
+            <legend className="px-1 text-sm font-semibold text-navy dark:text-white">
+              Reportorial Submission Timeliness
+            </legend>
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40">
+              <Label htmlFor="reports-on-time" className="leading-snug">
+                All reportorial requirements were submitted on time
+              </Label>
+              <Switch
+                id="reports-on-time"
+                checked={form.allReportsSubmittedOnTime}
+                onCheckedChange={(checked) => {
+                  setIsDirty(true);
+                  setForm((current) => ({
+                    ...current,
+                    allReportsSubmittedOnTime: checked,
+                    lateReportorialSubmissions: checked
+                      ? []
+                      : current.lateReportorialSubmissions,
+                  }));
+                }}
+                disabled={disabled}
+              />
+            </div>
 
-          {!form.allReportsSubmittedOnTime && (
-            <div className="grid gap-3 xl:grid-cols-2">
-              <p className="text-sm text-slate-600 dark:text-slate-300 xl:col-span-2">
-                Select each FY 2024 PBB Agency Accountability Timeline requirement that was not
-                submitted on time, then provide the actual submission date and reason or remarks.
-              </p>
-              {reportorialRequirements.map((requirement) => {
-                const lateEntry = form.lateReportorialSubmissions.find(
-                  (entry) => entry.requirementId === requirement.id,
-                );
-                const isLate = Boolean(lateEntry);
+            {!form.allReportsSubmittedOnTime && (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  Select each FY 2024 PBB Agency Accountability Timeline requirement that
+                  was not submitted on time, then provide the actual submission date and
+                  reason or remarks.
+                </p>
+                {reportorialRequirements.map((requirement) => {
+                  const lateEntry = form.lateReportorialSubmissions.find(
+                    (entry) => entry.requirementId === requirement.id,
+                  );
+                  const isLate = Boolean(lateEntry);
 
-                return (
-                  <div
-                    key={requirement.id}
-                    className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/40"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="break-words text-sm font-medium text-navy dark:text-white">
-                          {requirement.title}
-                        </p>
-                        <p className="mt-1 break-words text-xs text-slate-500">
-                          {requirement.deadline}
-                        </p>
+                  return (
+                    <div
+                      key={requirement.id}
+                      className="rounded-xl border border-white/60 bg-white/50 p-4 dark:border-slate-700 dark:bg-slate-900/40"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="break-words text-sm font-medium text-navy dark:text-white">
+                            {requirement.title}
+                          </p>
+                          <p className="mt-1 break-words text-xs text-slate-500">
+                            {requirement.deadline}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <Label htmlFor={`late-${requirement.id}`} className="text-xs">
+                            Late
+                          </Label>
+                          <Switch
+                            id={`late-${requirement.id}`}
+                            checked={isLate}
+                            onCheckedChange={(checked) =>
+                              toggleLateRequirement(requirement.id, checked)
+                            }
+                            disabled={disabled}
+                          />
+                        </div>
                       </div>
-                      <div className="flex shrink-0 items-center gap-2">
-                        <Label htmlFor={`late-${requirement.id}`} className="text-xs">
-                          Late
-                        </Label>
-                        <Switch
-                          id={`late-${requirement.id}`}
-                          checked={isLate}
-                          onCheckedChange={(checked) =>
-                            toggleLateRequirement(requirement.id, checked)
-                          }
-                          disabled={disabled}
-                        />
-                      </div>
+
+                      {isLate && lateEntry && (
+                        <div className="mt-4 space-y-3 border-t border-white/60 pt-4 dark:border-slate-700">
+                          <div>
+                            <Label htmlFor={`late-date-${requirement.id}`}>
+                              Date of actual submission
+                            </Label>
+                            <Input
+                              id={`late-date-${requirement.id}`}
+                              type="date"
+                              value={lateEntry.actualSubmissionDate}
+                              onChange={(event) =>
+                                updateLateSubmission(requirement.id, {
+                                  actualSubmissionDate: event.target.value,
+                                })
+                              }
+                              disabled={disabled}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor={`late-reason-${requirement.id}`}>
+                              Reason why / remarks
+                            </Label>
+                            <Textarea
+                              id={`late-reason-${requirement.id}`}
+                              value={lateEntry.reason}
+                              onChange={(event) =>
+                                updateLateSubmission(requirement.id, {
+                                  reason: event.target.value.slice(0, 1000),
+                                })
+                              }
+                              placeholder="Explain why the requirement was submitted late."
+                              rows={3}
+                              disabled={disabled}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  );
+                })}
+              </div>
+            )}
+          </fieldset>
 
-                    {isLate && lateEntry && (
-                      <div className="mt-3 space-y-3 border-t border-slate-200/80 pt-3 dark:border-slate-700">
-                        <div>
-                          <Label htmlFor={`late-date-${requirement.id}`}>
-                            Date of actual submission
-                          </Label>
-                          <Input
-                            id={`late-date-${requirement.id}`}
-                            type="date"
-                            value={lateEntry.actualSubmissionDate}
-                            onChange={(event) =>
-                              updateLateSubmission(requirement.id, {
-                                actualSubmissionDate: event.target.value,
-                              })
-                            }
-                            disabled={disabled}
-                            className="mt-1.5"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor={`late-reason-${requirement.id}`}>
-                            Reason why / remarks
-                          </Label>
-                          <Textarea
-                            id={`late-reason-${requirement.id}`}
-                            value={lateEntry.reason}
-                            onChange={(event) =>
-                              updateLateSubmission(requirement.id, {
-                                reason: event.target.value.slice(0, 1000),
-                              })
-                            }
-                            placeholder="Explain why the requirement was submitted late."
-                            rows={2}
-                            disabled={disabled}
-                            className="mt-1.5 min-h-[72px] resize-y bg-white dark:bg-slate-950"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <SectionRemarks
-            id="reportorial-remarks"
-            value={form.reportorialRemarks}
-            onChange={(value) => updateField("reportorialRemarks", value)}
-            disabled={disabled}
-            placeholder="Add general notes on reportorial submission timeliness for this assessment."
-          />
-        </fieldset>
-      </div>
-
-      <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
-        <div className="space-y-3">
-          <Button className="w-full sm:w-auto" onClick={save} disabled={disabled || isSaving}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={save}
+            disabled={disabled || isSaving}
+          >
             {isSaving ? "Saving…" : "Save Eligibility Assessment"}
           </Button>
           <p className="text-xs text-slate-500">
@@ -648,33 +617,44 @@ export function EligibilityCalculator({
           </p>
         </div>
 
-        <div className="rounded-2xl border border-white/60 bg-white/70 p-3.5 dark:border-slate-700 dark:bg-slate-900/50">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Criterion breakdown
-          </p>
-          <ul className="space-y-1.5 text-sm">
+        <div className="space-y-4 rounded-3xl border border-white/60 bg-white/50 p-5 dark:border-slate-700 dark:bg-slate-900/40 lg:sticky lg:top-4 lg:self-start">
+          <div>
+            <p className="text-sm text-slate-600 dark:text-slate-300">Total score</p>
+            <p className="text-3xl font-bold text-navy dark:text-white">
+              {displayResult.totalScore.toFixed(2)} / {displayResult.maxScore.toFixed(2)}
+            </p>
+            <p className={`mt-1 text-sm font-semibold ${statusClass}`}>{displayResult.status}</p>
+            {!displayResult.hasInputs && (
+              <p className="mt-1 text-xs text-slate-500">
+                Enter self-rating inputs to calculate an indicative score.
+              </p>
+            )}
+          </div>
+          <Progress value={displayResult.totalScore} aria-label="Eligibility score progress" />
+
+          <ul className="space-y-2 text-sm">
             {displayResult.criteria.map((criterion) => (
               <li
                 key={criterion.name}
-                className="flex flex-col gap-0.5 rounded-lg bg-white/80 px-2.5 py-2 dark:bg-slate-900/60 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-1 rounded-xl bg-white/70 px-3 py-2 sm:flex-row sm:items-center sm:justify-between dark:bg-slate-900/60"
               >
-                <span className="min-w-0 break-words text-xs sm:text-sm">{criterion.name}</span>
-                <span className="shrink-0 whitespace-nowrap text-xs sm:text-sm">
+                <span className="min-w-0 break-words">{criterion.name}</span>
+                <span className="shrink-0 whitespace-nowrap">
                   {criterion.rating > 0
-                    ? `Rating ${criterion.rating} · ${criterion.points.toFixed(2)} / ${criterion.maxPoints.toFixed(2)}`
-                    : `Not yet assessed · 0.00 / ${criterion.maxPoints.toFixed(2)}`}
+                    ? `Rating ${criterion.rating} · ${criterion.points.toFixed(2)} / ${criterion.maxPoints.toFixed(2)} pts`
+                    : `Not yet assessed · 0.00 / ${criterion.maxPoints.toFixed(2)} pts`}
                 </span>
               </li>
             ))}
           </ul>
 
           {displayResult.hasIsolationRisk && (
-            <div className="mt-3 rounded-xl border border-warning/30 bg-warning/10 p-3 text-xs sm:text-sm">
+            <div className="rounded-2xl border border-warning/30 bg-warning/10 p-4 text-sm">
               <p>
-                The estimated agency score may meet the 70-point threshold; however, one or more
-                criteria have a rating below 4. Units, heads, or individuals most responsible for
-                those criteria may be identified for isolation or exclusion, subject to official
-                assessment.
+                The estimated agency score may meet the 70-point threshold; however, one or
+                more criteria have a rating below 4. Units, heads, or individuals most
+                responsible for those criteria may be identified for isolation or exclusion,
+                subject to official assessment.
               </p>
               <ul className="mt-2 list-disc pl-5">
                 {displayResult.isolationRiskCriteria.map((name) => (
@@ -685,7 +665,7 @@ export function EligibilityCalculator({
           )}
 
           {displayResult.basePbbRatePercentOfMbs !== null && (
-            <div className="mt-3 space-y-1 text-xs sm:text-sm">
+            <div className="space-y-1 text-sm">
               <p>
                 Estimated base PBB rate (indicative):{" "}
                 <strong>{displayResult.basePbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
@@ -693,8 +673,10 @@ export function EligibilityCalculator({
               {!form.allReportsSubmittedOnTime &&
                 displayResult.adjustedPbbRatePercentOfMbs !== null && (
                   <p>
-                    Estimated adjusted rate after possible late-submission reduction (indicative):{" "}
-                    <strong>{displayResult.adjustedPbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
+                    Estimated adjusted rate after possible late-submission reduction
+                    (indicative):{" "}
+                    <strong>{displayResult.adjustedPbbRatePercentOfMbs.toFixed(2)}%</strong> of
+                    MBS
                   </p>
                 )}
             </div>

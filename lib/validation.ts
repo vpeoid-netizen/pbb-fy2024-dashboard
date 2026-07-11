@@ -57,8 +57,8 @@ export const eligibilityPatchSchema = z
     performanceRemarks: eligibilityTextFieldSchema,
     processRemarks: eligibilityTextFieldSchema,
     financialRemarks: eligibilityTextFieldSchema,
-    citizenSatisfactionRemarks: eligibilityTextFieldSchema,
-    reportorialRemarks: eligibilityTextFieldSchema,
+    hotlineRemarks: eligibilityTextFieldSchema,
+    ccbRemarks: eligibilityTextFieldSchema,
     updatedBy: updaterNameSchema,
     expectedVersion: z.number().int().positive(),
   })

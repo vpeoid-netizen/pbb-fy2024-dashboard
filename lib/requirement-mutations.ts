@@ -132,8 +132,8 @@ type UpdateEligibilityInput = {
   performanceRemarks: string;
   processRemarks: string;
   financialRemarks: string;
-  citizenSatisfactionRemarks: string;
-  reportorialRemarks: string;
+  hotlineRemarks: string;
+  ccbRemarks: string;
   updatedBy: string;
   expectedVersion: number;
 };
@@ -161,8 +161,8 @@ export async function updateEligibilityAssessment(
       performance_remarks = ${input.performanceRemarks},
       process_remarks = ${input.processRemarks},
       financial_remarks = ${input.financialRemarks},
-      citizen_satisfaction_remarks = ${input.citizenSatisfactionRemarks},
-      reportorial_remarks = ${input.reportorialRemarks},
+      hotline_remarks = ${input.hotlineRemarks},
+      ccb_remarks = ${input.ccbRemarks},
       updated_by = ${input.updatedBy},
       updated_at = NOW(),
       version = version + 1

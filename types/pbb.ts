@@ -82,8 +82,8 @@ export type EligibilityAssessment = {
   performanceRemarks: string;
   processRemarks: string;
   financialRemarks: string;
-  citizenSatisfactionRemarks: string;
-  reportorialRemarks: string;
+  hotlineRemarks: string;
+  ccbRemarks: string;
   updatedBy: string | null;
   updatedAt: string;
   version: number;

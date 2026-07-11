@@ -58,8 +58,8 @@ async function resetMonitoringData() {
       performance_remarks = '',
       process_remarks = '',
       financial_remarks = '',
-      citizen_satisfaction_remarks = '',
-      reportorial_remarks = '',
+      hotline_remarks = '',
+      ccb_remarks = '',
       updated_by = NULL,
       updated_at = NOW(),
       version = 1
