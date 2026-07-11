@@ -25,9 +25,6 @@ export function DashboardHeader() {
             <p className="mt-1 max-w-3xl text-sm text-slate-600 dark:text-slate-300 md:text-base">
               Document Submission and Monitoring Dashboard
             </p>
-            <span className="mt-3 inline-flex rounded-full bg-gold/20 px-3 py-1 text-xs font-semibold text-gold-dark">
-              FY 2024
-            </span>
           </div>
         </div>
 

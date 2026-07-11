@@ -27,11 +27,15 @@ export function MonitoringSummaryCard({
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <div
-            className="relative flex h-24 w-24 items-center justify-center rounded-full border-4 border-royal-blue/20 bg-white/70 dark:bg-slate-900/70"
+            className="relative size-24 shrink-0 rounded-full border-4 border-royal-blue/20 bg-white/70 dark:bg-slate-900/70"
             role="img"
             aria-label={`${completionPercentage}% complete`}
           >
-            <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
+            <svg
+              className="absolute inset-0 size-full -rotate-90"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="xMidYMid meet"
+            >
               <circle
                 cx="50"
                 cy="50"
@@ -51,12 +55,14 @@ export function MonitoringSummaryCard({
                 strokeDasharray={`${completionPercentage * 2.64} 264`}
               />
             </svg>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-navy dark:text-white">
-                {completionPercentage}%
-              </div>
-              <div className="text-[10px] uppercase tracking-wide text-slate-500">
-                Complete
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-navy dark:text-white">
+                  {completionPercentage}%
+                </div>
+                <div className="text-[10px] uppercase tracking-wide text-slate-500">
+                  Complete
+                </div>
               </div>
             </div>
           </div>

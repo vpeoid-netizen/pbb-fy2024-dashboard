@@ -125,15 +125,43 @@ export function calculateAdjustedPbbRate(
 }
 
 function createEmptyEligibilityResult(): EligibilityResult {
+  const baselineRating = 1;
+  const criteria = [
+    {
+      name: "Performance Results",
+      rating: baselineRating,
+      points: baselineRating * 5,
+      maxPoints: 25,
+    },
+    {
+      name: "Process Results",
+      rating: baselineRating,
+      points: baselineRating * 5,
+      maxPoints: 25,
+    },
+    {
+      name: "Financial Results",
+      rating: baselineRating,
+      points: baselineRating * 5,
+      maxPoints: 25,
+    },
+    {
+      name: "Hotline #8888",
+      rating: baselineRating,
+      points: baselineRating * 2.5,
+      maxPoints: 12.5,
+    },
+    {
+      name: "Contact Center ng Bayan",
+      rating: baselineRating,
+      points: baselineRating * 2.5,
+      maxPoints: 12.5,
+    },
+  ];
+
   return {
-    criteria: [
-      { name: "Performance Results", rating: 0, points: 0, maxPoints: 25 },
-      { name: "Process Results", rating: 0, points: 0, maxPoints: 25 },
-      { name: "Financial Results", rating: 0, points: 0, maxPoints: 25 },
-      { name: "Hotline #8888", rating: 0, points: 0, maxPoints: 12.5 },
-      { name: "Contact Center ng Bayan", rating: 0, points: 0, maxPoints: 12.5 },
-    ],
-    totalScore: 0,
+    criteria,
+    totalScore: criteria.reduce((sum, item) => sum + item.points, 0),
     maxScore: 100,
     status: "Not Yet Assessed",
     hasInputs: false,

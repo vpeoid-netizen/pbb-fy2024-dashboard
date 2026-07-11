@@ -8,6 +8,8 @@ export type ReportorialTimelineItem = {
 };
 
 const TIMELINE_IDS = [
+  "reportorial-bfar-q4-fy2024",
+  "reportorial-annual-apr-dbm-regional",
   "accountability-app-non-cse-2024",
   "accountability-cart",
   "accountability-apcpi-2023",
@@ -22,6 +24,10 @@ const TIMELINE_IDS = [
 ] as const;
 
 const TIMELINE_LABELS: Record<(typeof TIMELINE_IDS)[number], string> = {
+  "reportorial-bfar-q4-fy2024":
+    "BFAR for the fourth quarter of FY 2024, through the DBM Unified Reporting System",
+  "reportorial-annual-apr-dbm-regional":
+    "Submission of Annual APR to DBM Regional Office",
   "accountability-app-non-cse-2024":
     "FY 2024 Annual Procurement Plan for Non-Common Use Supplies and Equipment (APP non-CSE)",
   "accountability-cart":
@@ -43,6 +49,11 @@ const TIMELINE_LABELS: Record<(typeof TIMELINE_IDS)[number], string> = {
     "Posting of the Agency Review and Compliance Procedure (ARCP) and the Establishment of the Agency Review and Compliance Committee (RCC) for the Statement of Assets, Liabilities, and Net Worth (SALN) in the Agency Transparency Seal",
 };
 
+const TIMELINE_DEADLINES: Partial<Record<(typeof TIMELINE_IDS)[number], string>> = {
+  "reportorial-bfar-q4-fy2024": "January 30, 2025",
+  "reportorial-annual-apr-dbm-regional": "February 16, 2025",
+};
+
 export const REPORTORIAL_REQUIREMENT_IDS: string[] = [...TIMELINE_IDS];
 
 export const reportorialRequirements: ReportorialTimelineItem[] = TIMELINE_IDS.map((id) => {
@@ -51,6 +62,6 @@ export const reportorialRequirements: ReportorialTimelineItem[] = TIMELINE_IDS.m
     id,
     title: TIMELINE_LABELS[id],
     shortTitle: requirement?.shortTitle ?? TIMELINE_LABELS[id],
-    deadline: requirement?.deadline ?? "",
+    deadline: TIMELINE_DEADLINES[id] ?? requirement?.deadline ?? "",
   };
 });

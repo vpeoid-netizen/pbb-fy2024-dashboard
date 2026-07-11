@@ -109,7 +109,8 @@ describe("total score and PBB rate", () => {
     };
 
     const result = calculateEligibilityResult(emptyAssessment);
-    expect(result.totalScore).toBe(0);
+    expect(result.totalScore).toBe(20);
+    expect(result.criteria.every((criterion) => criterion.rating === 1)).toBe(true);
     expect(result.status).toBe("Not Yet Assessed");
     expect(result.hasInputs).toBe(false);
   });
