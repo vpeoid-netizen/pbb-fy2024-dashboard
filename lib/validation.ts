@@ -65,13 +65,23 @@ export const eligibilityPatchSchema = z
       });
     }
 
-    if (!data.allReportsSubmittedOnTime && data.lateReportorialSubmissions.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Select at least one late reportorial requirement and provide its actual submission date and reason.",
-        path: ["lateReportorialSubmissions"],
-      });
+    if (!data.allReportsSubmittedOnTime) {
+      for (const [index, entry] of data.lateReportorialSubmissions.entries()) {
+        if (!entry.actualSubmissionDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Actual submission date is required for each selected late requirement.",
+            path: ["lateReportorialSubmissions", index, "actualSubmissionDate"],
+          });
+        }
+        if (!entry.reason.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Reason or remarks are required for each selected late requirement.",
+            path: ["lateReportorialSubmissions", index, "reason"],
+          });
+        }
+      }
     }
 
     if (data.allReportsSubmittedOnTime && data.lateReportorialSubmissions.length > 0) {

@@ -101,9 +101,7 @@ function filterAndSortRequirements(
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
       case "default":
       default:
-        return (
-          Number(a.submitted) - Number(b.submitted) || a.displayOrder - b.displayOrder
-        );
+        return a.displayOrder - b.displayOrder;
     }
   });
 
@@ -207,7 +205,7 @@ export function DashboardControls({
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="default">Default order</SelectItem>
+              <SelectItem value="default">Official order</SelectItem>
               <SelectItem value="pending-first">Pending first</SelectItem>
               <SelectItem value="submitted-first">Submitted first</SelectItem>
               <SelectItem value="name">Requirement name</SelectItem>

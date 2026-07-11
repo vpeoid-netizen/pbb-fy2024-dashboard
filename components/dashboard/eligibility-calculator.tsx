@@ -85,26 +85,45 @@ export function EligibilityCalculator({
     onRequestUpdater(async (updaterName) => {
       setIsSaving(true);
       try {
+        const payload = {
+          totalPerformanceIndicators: form.totalPerformanceIndicators,
+          performanceIndicatorsMet: form.performanceIndicatorsMet,
+          processImprovementPercent: form.processImprovementPercent,
+          disbursementBurPercent: form.disbursementBurPercent,
+          hotlineTicketCount: form.hotlineTicketCount,
+          hotlineResolutionRate: form.hotlineResolutionRate,
+          hotlineNoComplaints: form.hotlineNoComplaints,
+          ccbTicketCount: form.ccbTicketCount,
+          ccbResolutionRate: form.ccbResolutionRate,
+          ccbNoComplaints: form.ccbNoComplaints,
+          allReportsSubmittedOnTime: form.allReportsSubmittedOnTime,
+          lateReportorialSubmissions: form.allReportsSubmittedOnTime
+            ? []
+            : form.lateReportorialSubmissions,
+          updatedBy: updaterName,
+          expectedVersion: assessment.version,
+        };
+
         const response = await fetch("/api/eligibility", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...form,
-            updatedBy: updaterName,
-            expectedVersion: assessment.version,
-          }),
+          body: JSON.stringify(payload),
         });
+
+        const data = (await response.json()) as { error?: string };
 
         if (response.status === 409) {
           toast.error(
-            "This assessment was updated by another user. The latest information has been loaded. Review it before saving again.",
+            data.error ??
+              "This assessment was updated by another user. The latest information has been loaded. Review it before saving again.",
           );
           onUpdated();
           return;
         }
 
         if (!response.ok) {
-          throw new Error("Save failed");
+          toast.error(data.error ?? "Unable to save eligibility assessment.");
+          return;
         }
 
         toast.success("Eligibility assessment saved.");
@@ -378,8 +397,9 @@ export function EligibilityCalculator({
             {!form.allReportsSubmittedOnTime && (
               <div className="space-y-4">
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Select each reportorial requirement that was not submitted on time, then
-                  provide the actual submission date and reason or remarks.
+                  Select each FY 2024 PBB Agency Accountability Timeline requirement that
+                  was not submitted on time, then provide the actual submission date and
+                  reason or remarks.
                 </p>
                 {reportorialRequirements.map((requirement) => {
                   const lateEntry = form.lateReportorialSubmissions.find(
@@ -395,7 +415,7 @@ export function EligibilityCalculator({
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
                           <p className="break-words text-sm font-medium text-navy dark:text-white">
-                            {requirement.shortTitle}
+                            {requirement.title}
                           </p>
                           <p className="mt-1 break-words text-xs text-slate-500">
                             {requirement.deadline}
