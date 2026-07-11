@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, FolderOpen, Moon, Sun } from "lucide-react";
+import { BookOpen, FileText, FolderOpen, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { UniversityLogo } from "@/components/dashboard/university-logo";
@@ -29,6 +29,12 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" asChild>
+            <Link href="/docs/user-manual.html" target="_blank" rel="noopener noreferrer">
+              <BookOpen className="h-4 w-4" />
+              User Manual & FAQs
+            </Link>
+          </Button>
           <Button variant="secondary" asChild>
             <Link href="/documents/Guidelines.pdf" target="_blank" rel="noopener noreferrer">
               <FileText className="h-4 w-4" />

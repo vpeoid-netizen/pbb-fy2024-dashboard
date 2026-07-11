@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Manual &amp; FAQs | FY 2024 PBB Dashboard</title>
+    <link rel="icon" href="/logo.png" />
+    <style>
+      :root {
+        --navy: #0b2a5b;
+        --royal-blue: #1457d9;
+        --light-blue: #e8f1ff;
+        --gold: #f4c542;
+        --gold-dark: #d7a900;
+        --success: #15803d;
+        --warning: #b45309;
+        --danger: #b91c1c;
+        --slate-50: #f8fafc;
+        --slate-100: #f1f5f9;
+        --slate-500: #64748b;
+        --slate-600: #475569;
+        --slate-900: #0f172a;
+        --card-bg: rgba(255, 255, 255, 0.96);
+        --card-border: rgba(11, 42, 91, 0.12);
+        --shadow: 0 12px 32px rgba(11, 42, 91, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        line-height: 1.65;
+        color: var(--slate-900);
+        background:
+          radial-gradient(circle at top left, rgba(20, 87, 217, 0.12), transparent 28%),
+          radial-gradient(circle at top right, rgba(244, 197, 66, 0.12), transparent 24%),
+          linear-gradient(180deg, var(--slate-50) 0%, #eef4ff 45%, var(--slate-50) 100%);
+      }
+
+      a {
+        color: var(--royal-blue);
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.25rem 1rem 3rem;
+      }
+
+      .top-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1rem;
+        border-radius: 999px;
+        background: var(--royal-blue);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 14px rgba(20, 87, 217, 0.25);
+      }
+
+      .back-link:hover {
+        background: #0f49b8;
+      }
+
+      .hero,
+      .card,
+      .faq-item {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 1.75rem 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-kicker {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--royal-blue);
+      }
+
+      .hero h1 {
+        margin: 0.5rem 0 0.75rem;
+        font-size: clamp(1.6rem, 4vw, 2.35rem);
+        line-height: 1.2;
+        color: var(--navy);
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--slate-600);
+        max-width: 70ch;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 1.25rem;
+        align-items: start;
+      }
+
+      .toc {
+        position: sticky;
+        top: 1rem;
+        padding: 1rem;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+
+      .toc h2 {
+        margin: 0 0 0.75rem;
+        font-size: 0.95rem;
+        color: var(--navy);
+      }
+
+      .toc ol {
+        margin: 0;
+        padding-left: 1.1rem;
+        font-size: 0.92rem;
+      }
+
+      .toc li {
+        margin: 0.35rem 0;
+      }
+
+      .content section {
+        margin-bottom: 1.25rem;
+      }
+
+      .card {
+        padding: 1.35rem 1.25rem;
+      }
+
+      .card h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.35rem;
+        color: var(--navy);
+      }
+
+      .card h3 {
+        margin: 1.25rem 0 0.5rem;
+        font-size: 1.05rem;
+        color: var(--navy);
+      }
+
+      .card p,
+      .card li {
+        color: var(--slate-600);
+      }
+
+      .card ul,
+      .card ol {
+        padding-left: 1.25rem;
+      }
+
+      .callout {
+        margin: 1rem 0;
+        padding: 0.9rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(20, 87, 217, 0.18);
+        background: rgba(232, 241, 255, 0.75);
+        color: var(--slate-600);
+        font-size: 0.95rem;
+      }
+
+      .callout.warning {
+        border-color: rgba(180, 83, 9, 0.25);
+        background: rgba(255, 247, 237, 0.9);
+      }
+
+      .callout.danger {
+        border-color: rgba(185, 28, 28, 0.25);
+        background: rgba(254, 242, 242, 0.9);
+      }
+
+      figure {
+        margin: 1rem 0 0;
+      }
+
+      figure img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 1rem;
+        border: 1px solid rgba(11, 42, 91, 0.12);
+        box-shadow: 0 8px 24px rgba(11, 42, 91, 0.08);
+      }
+
+      figcaption {
+        margin-top: 0.55rem;
+        font-size: 0.88rem;
+        color: var(--slate-500);
+        text-align: center;
+      }
+
+      .steps {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 0.85rem 0 0.85rem 2.75rem;
+        border-bottom: 1px solid rgba(11, 42, 91, 0.08);
+      }
+
+      .steps li:last-child {
+        border-bottom: none;
+      }
+
+      .steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0.85rem;
+        width: 1.85rem;
+        height: 1.85rem;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--royal-blue);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .faq-item {
+        margin-bottom: 0.75rem;
+        overflow: hidden;
+      }
+
+      .faq-item summary {
+        cursor: pointer;
+        list-style: none;
+        padding: 1rem 1.1rem;
+        font-weight: 600;
+        color: var(--navy);
+      }
+
+      .faq-item summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .faq-item summary::after {
+        content: "+";
+        float: right;
+        color: var(--royal-blue);
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+
+      .faq-item[open] summary::after {
+        content: "−";
+      }
+
+      .faq-body {
+        padding: 0 1.1rem 1rem;
+        color: var(--slate-600);
+      }
+
+      .footer-note {
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.88rem;
+        color: var(--slate-500);
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .toc {
+          position: static;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="top-bar">
+        <a class="back-link" href="/">← Back to Dashboard</a>
+        <span style="font-size: 0.9rem; color: var(--slate-500)">Version 1.0.0 · Partido State University</span>
+      </div>
+
+      <header class="hero">
+        <p class="hero-kicker">Partido State University</p>
+        <h1>FY 2024 PBB Dashboard — User Manual &amp; FAQs</h1>
+        <p>
+          This guide explains how to use the Document Submission and Monitoring Dashboard for
+          FY 2024 Performance-Based Bonus (PBB) requirements. Screenshots below are captured
+          from the live dashboard interface.
+        </p>
+      </header>
+
+      <div class="layout">
+        <nav class="toc" aria-label="Table of contents">
+          <h2>Contents</h2>
+          <ol>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#header-tools">Header Tools</a></li>
+            <li><a href="#monitoring-summary">Monitoring Summary</a></li>
+            <li><a href="#recent-activity">Recent Activity</a></li>
+            <li><a href="#search-filters">Search &amp; Filters</a></li>
+            <li><a href="#requirement-tiles">Requirement Tiles</a></li>
+            <li><a href="#remarks">Remarks</a></li>
+            <li><a href="#eligibility">Eligibility Self-Rating</a></li>
+            <li><a href="#reportorial">Reportorial Timeliness</a></li>
+            <li><a href="#collaboration">Collaboration &amp; Sync</a></li>
+            <li><a href="#mobile">Mobile Use</a></li>
+            <li><a href="#faqs">FAQs</a></li>
+          </ol>
+        </nav>
+
+        <main class="content">
+          <section id="overview" class="card">
+            <h2>1. Overview</h2>
+            <p>
+              The FY 2024 PBB Dashboard is a centralized monitoring tool for Partido State
+              University. It tracks documentary submission status, shared remarks, recent updates,
+              and an indicative eligibility self-rating across 18 official PBB requirements.
+            </p>
+            <div class="callout">
+              <strong>Important:</strong> This dashboard does <em>not</em> upload or store
+              documentary files. Google Drive folders remain the actual submission destinations.
+              The dashboard stores monitoring metadata only—status, remarks, updater name, and
+              timestamps.
+            </div>
+            <p>The dashboard is organized from top to bottom as follows:</p>
+            <ol>
+              <li>Header with quick links and theme toggle</li>
+              <li>Central Monitoring Summary</li>
+              <li>Recent Activity</li>
+              <li>Search, filters, and refresh controls</li>
+              <li>Dimensions of Accountability (requirement tiles)</li>
+              <li>Indicative Self-Rating of FY 2024 PBB Eligibility</li>
+              <li>Footer with disclaimer and institutional attribution</li>
+            </ol>
+          </section>
+
+          <section id="getting-started" class="card">
+            <h2>2. Getting Started</h2>
+            <ol class="steps">
+              <li>
+                Open the dashboard URL provided by the Institutional Planning and Development
+                Office (IPDO) or the Office of the Vice President for Executive Operations and
+                Institutional Development (Ovpeoid).
+              </li>
+              <li>
+                Review the <strong>Central Monitoring Summary</strong> to see overall progress.
+              </li>
+              <li>
+                Locate your assigned requirement tile under
+                <strong>Dimensions of Accountability (Results Areas)</strong>.
+              </li>
+              <li>
+                Use <strong>Open Submission Folder</strong> to access the Google Drive folder for
+                document upload outside this system.
+              </li>
+              <li>
+                After uploading documents, return to the dashboard, mark the requirement as
+                submitted, and add remarks if needed.
+              </li>
+              <li>
+                For internal planning, complete the
+                <strong>Indicative Self-Rating</strong> section at the bottom and click
+                <strong>Save Eligibility Assessment</strong>.
+              </li>
+            </ol>
+            <figure>
+              <img
+                src="/docs/images/01-header-and-summary.png"
+                alt="Dashboard header, monitoring summary, recent activity, and search controls"
+                loading="lazy"
+              />
+              <figcaption>Figure 1 — Dashboard header, summary, activity, and search area</figcaption>
+            </figure>
+          </section>
+
+          <section id="header-tools" class="card">
+            <h2>3. Header Tools</h2>
+            <p>The top header provides quick access to reference materials and display options.</p>
+            <ul>
+              <li>
+                <strong>View Guidelines</strong> — Opens the official FY 2024 PBB Guidelines PDF
+                in a new browser tab.
+              </li>
+              <li>
+                <strong>Open Reporting Forms</strong> — Opens the shared Google Drive folder
+                containing reporting forms used for PBB submissions.
+              </li>
+              <li>
+                <strong>User Manual &amp; FAQs</strong> — Opens this guide.
+              </li>
+              <li>
+                <strong>Theme toggle (sun/moon icon)</strong> — Switches between light and dark
+                display modes. Your preference is saved in the browser.
+              </li>
+            </ul>
+          </section>
+
+          <section id="monitoring-summary" class="card">
+            <h2>4. Central Monitoring Summary</h2>
+            <p>
+              This card shows the overall documentary submission progress for all 18 requirements.
+            </p>
+            <ul>
+              <li>
+                <strong>Completion percentage</strong> — Circular indicator and progress bar showing
+                submitted vs. total requirements.
+              </li>
+              <li>
+                <strong>Counts</strong> — Displays submitted, pending, and total requirement counts.
+              </li>
+              <li>
+                <strong>Last synchronized</strong> — Timestamp of the most recent data refresh from
+                the database.
+              </li>
+              <li>
+                <strong>Connection status</strong> — Shows whether the dashboard is online and
+                receiving live updates.
+              </li>
+            </ul>
+            <p>
+              When all 18 requirements are marked submitted, a success message appears in this
+              section.
+            </p>
+          </section>
+
+          <section id="recent-activity" class="card">
+            <h2>5. Recent Activity</h2>
+            <p>
+              The Recent Activity panel lists the five most recent dashboard changes, such as
+              submission status updates, remarks saves, and eligibility assessment updates.
+            </p>
+            <ul>
+              <li>Each entry shows who made the change, what was changed, and when.</li>
+              <li>
+                Click <strong>History</strong> to open the complete activity log (up to 100 recent
+                entries).
+              </li>
+            </ul>
+            <figure>
+              <img
+                src="/docs/images/07-activity-history-dialog.png"
+                alt="Complete Activity History dialog showing audit log entries"
+                loading="lazy"
+              />
+              <figcaption>Figure 2 — Complete Activity History dialog</figcaption>
+            </figure>
+          </section>
+
+          <section id="search-filters" class="card">
+            <h2>6. Search &amp; Filters</h2>
+            <p>Use the controls below Recent Activity to find specific requirements quickly.</p>
+            <ul>
+              <li>
+                <strong>Search</strong> — Search by requirement title, description, validating
+                agency, deadline, or keywords.
+              </li>
+              <li>
+                <strong>Category filter</strong> — Filter by Performance, Process, Financial,
+                Citizen/Client Satisfaction, or Agency Accountability.
+              </li>
+              <li>
+                <strong>Status filter</strong> — Show all, pending only, or submitted only.
+              </li>
+              <li>
+                <strong>Sort</strong> — Default is <em>Official order</em> so tiles stay in their
+                prescribed sequence. Other options include title and status.
+              </li>
+              <li>
+                <strong>Refresh</strong> — Manually reload the latest data from the server.
+              </li>
+              <li>
+                <strong>Clear filters</strong> — Resets search and filter selections.
+              </li>
+            </ul>
+            <p>Filter preferences are saved in your browser for convenience.</p>
+            <figure>
+              <img
+                src="/docs/images/05-recent-activity-and-filters.png"
+                alt="Recent activity list with search bar and filter dropdowns"
+                loading="lazy"
+              />
+              <figcaption>Figure 3 — Recent Activity with search and filter controls</figcaption>
+            </figure>
+          </section>
+
+          <section id="requirement-tiles" class="card">
+            <h2>7. Requirement Tiles</h2>
+            <p>
+              Requirements are grouped under <strong>Dimensions of Accountability (Results Areas)</strong>:
+            </p>
+            <ul>
+              <li><strong>Performance Results</strong> — Four MFO tiles (Higher Education, Advanced Education, Research, TAEP)</li>
+              <li><strong>Process Results</strong>, <strong>Financial Results</strong>, and <strong>Citizen/Client Satisfaction Results</strong> — Displayed in equal columns</li>
+              <li><strong>Agency Accountabilities</strong> — Separate section below the results areas</li>
+            </ul>
+            <p>Each requirement tile includes:</p>
+            <ul>
+              <li>Category badge and requirement title</li>
+              <li>Status badge (<em>Pending</em> or <em>Submitted</em>)</li>
+              <li>Description and documentary checklist (expandable)</li>
+              <li>Validating agency and deadline information</li>
+              <li><strong>Open Submission Folder</strong> — Opens the Google Drive folder</li>
+              <li><strong>Copy Folder Link</strong> — Copies the folder URL to your clipboard</li>
+              <li><strong>Submitted</strong> toggle — Marks the requirement as submitted or pending</li>
+              <li><strong>Remarks</strong> field with Save Remarks button</li>
+              <li>Submitted date, last updated timestamp, and updater name</li>
+              <li><strong>View Update History</strong> — Per-requirement audit trail</li>
+            </ul>
+            <figure>
+              <img
+                src="/docs/images/02-requirement-tiles.png"
+                alt="Performance Results requirement tiles showing MFO cards with submission controls"
+                loading="lazy"
+              />
+              <figcaption>Figure 4 — Performance Results requirement tiles</figcaption>
+            </figure>
+            <h3>Marking a requirement as submitted</h3>
+            <ol class="steps">
+              <li>Confirm documents are uploaded to the correct Google Drive folder.</li>
+              <li>Toggle <strong>Submitted</strong> to ON.</li>
+              <li>Enter your name or office when prompted, then click <strong>Continue</strong>.</li>
+              <li>The monitoring summary updates automatically for all users.</li>
+            </ol>
+            <div class="callout warning">
+              Turning a requirement back to <strong>Pending</strong> requires confirmation, since
+              this affects the overall completion percentage.
+            </div>
+          </section>
+
+          <section id="remarks" class="card">
+            <h2>8. Remarks</h2>
+            <p>
+              Each requirement tile has a shared remarks field for submission details, deficiencies,
+              follow-up actions, proof-of-submission notes, or validation status.
+            </p>
+            <ol class="steps">
+              <li>Type your remarks in the text area (maximum 1,000 characters).</li>
+              <li>Click <strong>Save Remarks</strong>. The button is enabled only when there are unsaved changes.</li>
+              <li>Enter your name or office when prompted.</li>
+              <li>Wait for the <em>Saved</em> confirmation before closing the page.</li>
+            </ol>
+            <div class="callout danger">
+              Remarks are visible to all dashboard users. Do not enter confidential, personal, or
+              sensitive information. This disclaimer also appears in the dashboard footer.
+            </div>
+          </section>
+
+          <section id="eligibility" class="card">
+            <h2>9. Indicative Self-Rating of FY 2024 PBB Eligibility</h2>
+            <p>
+              Located at the bottom of the dashboard, this section provides an internal planning
+              tool for estimating PBB eligibility on a 100-point scale. It is <em>not</em> the
+              official Final Eligibility Assessment.
+            </p>
+            <p>The self-rating covers four result dimensions plus complaint handling:</p>
+            <ul>
+              <li><strong>Performance Results</strong> — Total applicable indicators and number fully met</li>
+              <li><strong>Process Results</strong> — Percentage improvement in the nominated critical service</li>
+              <li><strong>Financial Results</strong> — FY 2024 Disbursement BUR percentage</li>
+              <li><strong>Hotline #8888</strong> — Ticket count, resolution rate, or “no complaints”</li>
+              <li><strong>Contact Center ng Bayan</strong> — Ticket count, resolution rate, or “no complaints”</li>
+            </ul>
+            <p>
+              Before any inputs are entered, each criterion displays a baseline <strong>Rating 1</strong>
+              (the lowest possible score). As you enter values, the score panel on the right updates
+              in real time.
+            </p>
+            <p>After completing the form, click <strong>Save Eligibility Assessment</strong>. The score panel shows:</p>
+            <ul>
+              <li>Total score out of 100</li>
+              <li>Status (Not Yet Assessed, Indicatively Eligible, or Below Eligibility Threshold)</li>
+              <li>Per-criterion rating and points</li>
+              <li>Isolation/exclusion risk warning when any criterion is rated below 4</li>
+              <li>Estimated indicative PBB rate (% of MBS), when applicable</li>
+            </ul>
+            <figure>
+              <img
+                src="/docs/images/04-eligibility-score-panel.png"
+                alt="Reportorial submission timeliness section with late submission toggles and date fields"
+                loading="lazy"
+              />
+              <figcaption>Figure 5 — Reportorial Submission Timeliness (part of eligibility section)</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/docs/images/03-eligibility-self-rating.png"
+                alt="Eligibility self-rating save button and dashboard footer"
+                loading="lazy"
+              />
+              <figcaption>Figure 6 — Save Eligibility Assessment and footer area</figcaption>
+            </figure>
+          </section>
+
+          <section id="reportorial" class="card">
+            <h2>10. Reportorial Submission Timeliness</h2>
+            <p>
+              Within the eligibility section, the <strong>Reportorial Submission Timeliness</strong>
+              area tracks whether agency accountability reports were submitted on time.
+            </p>
+            <ol class="steps">
+              <li>
+                Toggle <strong>All reportorial requirements were submitted on time</strong> OFF if
+                any requirement was late.
+              </li>
+              <li>
+                For each late item, switch its <strong>Late</strong> toggle ON. The first two items
+                in the list are the APR timelines:
+                <ul>
+                  <li>BFAR for the fourth quarter of FY 2024 (January 30, 2025)</li>
+                  <li>Submission of Annual APR to DBM Regional Office (February 16, 2025)</li>
+                </ul>
+              </li>
+              <li>Enter the actual submission date and reason/remarks for each late item.</li>
+              <li>Click <strong>Save Eligibility Assessment</strong>.</li>
+            </ol>
+            <p>
+              If any reportorial requirement was late, a possible 5% reduction may be applied to the
+              estimated indicative PBB rate shown in the score panel.
+            </p>
+          </section>
+
+          <section id="collaboration" class="card">
+            <h2>11. Collaboration &amp; Synchronization</h2>
+            <p>
+              The dashboard is designed for multi-user, multi-browser collaboration without login
+              credentials.
+            </p>
+            <ul>
+              <li>Data refreshes automatically every 5 seconds.</li>
+              <li>All users see the same submission statuses, remarks, and progress.</li>
+              <li>
+                Before any change, you must enter your <strong>name or office</strong>. This name
+                is stored in your browser and reused for future updates.
+              </li>
+              <li>
+                If two users edit the same item simultaneously, the system uses version checking.
+                The second save may be rejected with a message to reload and review the latest data.
+              </li>
+            </ul>
+            <figure>
+              <img
+                src="/docs/images/06-updater-name-dialog.png"
+                alt="Enter Your Name or Office dialog shown before saving changes"
+                loading="lazy"
+              />
+              <figcaption>Figure 7 — Name or Office prompt before saving changes</figcaption>
+            </figure>
+          </section>
+
+          <section id="mobile" class="card">
+            <h2>12. Mobile Use</h2>
+            <p>The dashboard is responsive and usable on phones and tablets.</p>
+            <ul>
+              <li>Requirement tiles stack vertically on smaller screens.</li>
+              <li>Search, filters, and action buttons expand to full width for easier tapping.</li>
+              <li>The completion circle in the monitoring summary maintains its shape on mobile.</li>
+              <li>Use landscape orientation when reviewing long requirement descriptions or the eligibility form.</li>
+            </ul>
+          </section>
+
+          <section id="faqs" class="card">
+            <h2>13. Frequently Asked Questions (FAQs)</h2>
+
+            <details class="faq-item">
+              <summary>Do I need a username and password?</summary>
+              <div class="faq-body">
+                No. The dashboard uses public collaborative editing. Anyone with the URL can view
+                and update monitoring data. You identify yourself by entering your name or office
+                each time you make a change (your browser remembers it for convenience).
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Does this dashboard store our uploaded documents?</summary>
+              <div class="faq-body">
+                No. Documents must be uploaded to the designated Google Drive folders linked on each
+                requirement tile. The dashboard only records whether submission is complete, along
+                with remarks and audit metadata.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Why do I need to enter my name or office before saving?</summary>
+              <div class="faq-body">
+                All changes are shared and visible to every dashboard user. Recording the updater
+                name supports accountability and appears in the activity log and requirement
+                history.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>My remarks or eligibility inputs disappeared. What happened?</summary>
+              <div class="faq-body">
+                Unsaved text may be overwritten when the dashboard refreshes from the server (every
+                5 seconds). Always click <strong>Save Remarks</strong> or
+                <strong>Save Eligibility Assessment</strong> before leaving the page. If another
+                user saved changes first, reload the page and review the latest data.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Why did my save fail with a conflict message?</summary>
+              <div class="faq-body">
+                Another user updated the same requirement or eligibility record while you were
+                editing. The dashboard loads the latest version automatically. Review the current
+                values and save again if needed.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Does marking a requirement as submitted upload files automatically?</summary>
+              <div class="faq-body">
+                No. You must upload files to the Google Drive folder first, then mark the
+                requirement as submitted on the dashboard to update the monitoring status.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Can I undo marking a requirement as submitted?</summary>
+              <div class="faq-body">
+                Yes. Toggle <strong>Submitted</strong> back to OFF. You will be asked to confirm
+                because this changes the overall completion percentage for all users.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Is the eligibility self-rating the official DBM result?</summary>
+              <div class="faq-body">
+                No. It is an indicative internal tool for planning and monitoring only. Final
+                eligibility, exclusions, validation results, and applicable PBB rates remain subject
+                to the official Final Eligibility Assessment under the FY 2024 PBB Guidelines.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Why does the score show Rating 1 before I enter anything?</summary>
+              <div class="faq-body">
+                Rating 1 is the lowest possible score for each criterion. The dashboard uses this
+                as a baseline (20.00 / 100.00 total) until you enter actual self-rating inputs.
+                Status remains <em>Not Yet Assessed</em> until meaningful data is provided and saved.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Do I need to mark requirements submitted before using the eligibility section?</summary>
+              <div class="faq-body">
+                No. The eligibility self-rating is independent of requirement submission statuses.
+                You can complete and save it at any time.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>What should I put in the remarks field?</summary>
+              <div class="faq-body">
+                Use remarks for submission details, noted deficiencies, follow-up actions,
+                proof-of-submission references, or internal validation notes. Avoid confidential,
+                personal, or sensitive information.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>How often does the dashboard update?</summary>
+              <div class="faq-body">
+                The dashboard polls for new data every 5 seconds. You can also click
+                <strong>Refresh</strong> for an immediate update. The <em>Last synchronized</em>
+                timestamp in the monitoring summary shows when data was last loaded.
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Who maintains this dashboard?</summary>
+              <div class="faq-body">
+                The dashboard is maintained for internal monitoring by the Office of the Vice
+                President for Executive Operations and Institutional Development and the
+                Institutional Planning and Development Office, Partido State University.
+              </div>
+            </details>
+          </section>
+        </main>
+      </div>
+
+      <p class="footer-note">
+        Office of the Vice President for Executive Operations and Institutional Development ·
+        Institutional Planning and Development Office · Partido State University
+      </p>
+    </div>
+  </body>
+</html>
