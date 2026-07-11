@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { reportorialRequirements } from "@/data/reportorialRequirements";
+import { calculateEligibilityResult } from "@/lib/eligibility";
 import { formatManilaDateTime } from "@/lib/date-time";
 import type {
   EligibilityAssessment,
@@ -33,15 +34,25 @@ export function EligibilityCalculator({
 }: EligibilityCalculatorProps) {
   const [form, setForm] = useState(assessment);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const assessmentVersion = assessment.version;
+  const assessmentUpdatedAt = assessment.updatedAt;
 
   useEffect(() => {
+    if (isDirty || isSaving) {
+      return;
+    }
     setForm(assessment);
-  }, [assessment]);
+    // Sync from server only when version/timestamp changes, not on every poll reference update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assessmentVersion, assessmentUpdatedAt, isDirty, isSaving]);
 
   const updateField = <K extends keyof EligibilityAssessment>(
     key: K,
     value: EligibilityAssessment[K],
   ) => {
+    setIsDirty(true);
     setForm((current) => ({ ...current, [key]: value }));
   };
 
@@ -49,6 +60,7 @@ export function EligibilityCalculator({
     requirementId: string,
     patch: Partial<LateReportorialSubmission>,
   ) => {
+    setIsDirty(true);
     setForm((current) => ({
       ...current,
       lateReportorialSubmissions: current.lateReportorialSubmissions.map((entry) =>
@@ -58,6 +70,7 @@ export function EligibilityCalculator({
   };
 
   const toggleLateRequirement = (requirementId: string, isLate: boolean) => {
+    setIsDirty(true);
     setForm((current) => {
       if (isLate) {
         if (current.lateReportorialSubmissions.some((entry) => entry.requirementId === requirementId)) {
@@ -113,6 +126,7 @@ export function EligibilityCalculator({
         const data = (await response.json()) as { error?: string };
 
         if (response.status === 409) {
+          setIsDirty(false);
           toast.error(
             data.error ??
               "This assessment was updated by another user. The latest information has been loaded. Review it before saving again.",
@@ -126,6 +140,7 @@ export function EligibilityCalculator({
           return;
         }
 
+        setIsDirty(false);
         toast.success("Eligibility assessment saved.");
         onUpdated();
       } catch {
@@ -136,11 +151,20 @@ export function EligibilityCalculator({
     });
   }, [assessment.version, form, onRequestUpdater, onUpdated]);
 
+  const displayResult: EligibilityResult = isDirty
+    ? calculateEligibilityResult({
+        ...form,
+        updatedBy: assessment.updatedBy,
+        updatedAt: assessment.updatedAt,
+        version: assessment.version,
+      })
+    : result;
+
   const statusClass =
-    result.status === "Not Yet Assessed"
+    displayResult.status === "Not Yet Assessed"
       ? "text-slate-600 dark:text-slate-300"
-      : result.status === "Indicatively Eligible"
-        ? result.hasIsolationRisk
+      : displayResult.status === "Indicatively Eligible"
+        ? displayResult.hasIsolationRisk
           ? "text-warning"
           : "text-success"
         : "text-danger";
@@ -165,9 +189,9 @@ export function EligibilityCalculator({
             <p className="text-xs text-slate-600 dark:text-slate-300">
               Rate accomplishment of applicable FY 2024 performance indicators.
             </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="total-indicators">
+            <div className="grid gap-3 sm:grid-cols-2 sm:items-end">
+              <div className="flex flex-col">
+                <Label htmlFor="total-indicators" className="mb-2 min-h-[3rem] leading-snug">
                   Total applicable FY 2024 performance indicators
                 </Label>
                 <Input
@@ -184,8 +208,10 @@ export function EligibilityCalculator({
                   disabled={disabled}
                 />
               </div>
-              <div>
-                <Label htmlFor="indicators-met">Number of indicators fully met</Label>
+              <div className="flex flex-col">
+                <Label htmlFor="indicators-met" className="mb-2 min-h-[3rem] leading-snug">
+                  Number of indicators fully met
+                </Label>
                 <Input
                   id="indicators-met"
                   type="number"
@@ -382,6 +408,7 @@ export function EligibilityCalculator({
                 id="reports-on-time"
                 checked={form.allReportsSubmittedOnTime}
                 onCheckedChange={(checked) => {
+                  setIsDirty(true);
                   setForm((current) => ({
                     ...current,
                     allReportsSubmittedOnTime: checked,
@@ -480,7 +507,11 @@ export function EligibilityCalculator({
             )}
           </fieldset>
 
-          <Button onClick={save} disabled={disabled || isSaving}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={save}
+            disabled={disabled || isSaving}
+          >
             {isSaving ? "Saving…" : "Save Eligibility Assessment"}
           </Button>
           <p className="text-xs text-slate-500">
@@ -493,19 +524,19 @@ export function EligibilityCalculator({
           <div>
             <p className="text-sm text-slate-600 dark:text-slate-300">Total score</p>
             <p className="text-3xl font-bold text-navy dark:text-white">
-              {result.totalScore.toFixed(2)} / {result.maxScore.toFixed(2)}
+              {displayResult.totalScore.toFixed(2)} / {displayResult.maxScore.toFixed(2)}
             </p>
-            <p className={`mt-1 text-sm font-semibold ${statusClass}`}>{result.status}</p>
-            {!result.hasInputs && (
+            <p className={`mt-1 text-sm font-semibold ${statusClass}`}>{displayResult.status}</p>
+            {!displayResult.hasInputs && (
               <p className="mt-1 text-xs text-slate-500">
                 Enter self-rating inputs to calculate an indicative score.
               </p>
             )}
           </div>
-          <Progress value={result.totalScore} aria-label="Eligibility score progress" />
+          <Progress value={displayResult.totalScore} aria-label="Eligibility score progress" />
 
           <ul className="space-y-2 text-sm">
-            {result.criteria.map((criterion) => (
+            {displayResult.criteria.map((criterion) => (
               <li
                 key={criterion.name}
                 className="flex flex-col gap-1 rounded-xl bg-white/70 px-3 py-2 sm:flex-row sm:items-center sm:justify-between dark:bg-slate-900/60"
@@ -520,7 +551,7 @@ export function EligibilityCalculator({
             ))}
           </ul>
 
-          {result.hasIsolationRisk && (
+          {displayResult.hasIsolationRisk && (
             <div className="rounded-2xl border border-warning/30 bg-warning/10 p-4 text-sm">
               <p>
                 The estimated agency score may meet the 70-point threshold; however, one or
@@ -529,24 +560,25 @@ export function EligibilityCalculator({
                 subject to official assessment.
               </p>
               <ul className="mt-2 list-disc pl-5">
-                {result.isolationRiskCriteria.map((name) => (
+                {displayResult.isolationRiskCriteria.map((name) => (
                   <li key={name}>{name}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {result.basePbbRatePercentOfMbs !== null && (
+          {displayResult.basePbbRatePercentOfMbs !== null && (
             <div className="space-y-1 text-sm">
               <p>
                 Estimated base PBB rate (indicative):{" "}
-                <strong>{result.basePbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
+                <strong>{displayResult.basePbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
               </p>
-              {!form.allReportsSubmittedOnTime && result.adjustedPbbRatePercentOfMbs !== null && (
+              {!form.allReportsSubmittedOnTime &&
+                displayResult.adjustedPbbRatePercentOfMbs !== null && (
                 <p>
                   Estimated adjusted rate after possible late-submission reduction
                   (indicative):{" "}
-                  <strong>{result.adjustedPbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
+                  <strong>{displayResult.adjustedPbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
                 </p>
               )}
             </div>

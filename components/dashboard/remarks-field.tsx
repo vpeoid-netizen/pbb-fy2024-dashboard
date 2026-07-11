@@ -26,8 +26,12 @@ export function RemarksField({
   const [value, setValue] = useState(requirement.remarks);
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const latestServerRemarks = useRef(requirement.remarks);
+  const isDirtyRef = useRef(false);
 
   useEffect(() => {
+    if (isDirtyRef.current) {
+      return;
+    }
     latestServerRemarks.current = requirement.remarks;
     setValue(requirement.remarks);
     setSaveState("saved");
@@ -36,6 +40,7 @@ export function RemarksField({
   const saveRemarks = useCallback(
     async (remarks: string, updaterName: string) => {
       if (remarks === latestServerRemarks.current) {
+        isDirtyRef.current = false;
         setSaveState("saved");
         return;
       }
@@ -54,6 +59,7 @@ export function RemarksField({
         });
 
         if (response.status === 409) {
+          isDirtyRef.current = false;
           setSaveState("failed");
           toast.error(
             "This requirement was updated by another user. The latest information has been loaded. Review it before saving again.",
@@ -66,6 +72,7 @@ export function RemarksField({
           throw new Error("Save failed");
         }
 
+        isDirtyRef.current = false;
         setSaveState("saved");
         toast.success("Remarks saved.");
         onUpdated();
@@ -103,7 +110,8 @@ export function RemarksField({
         onChange={(event) => {
           const next = event.target.value.slice(0, 1000);
           setValue(next);
-          if (next !== latestServerRemarks.current) {
+          isDirtyRef.current = next !== latestServerRemarks.current;
+          if (isDirtyRef.current) {
             setSaveState("unsaved");
           } else {
             setSaveState("saved");
@@ -112,26 +120,20 @@ export function RemarksField({
         placeholder="Add submission details, deficiencies, follow-up actions, proof-of-submission information, or validation status."
         disabled={disabled}
         rows={4}
+        className="min-h-[96px] text-base sm:text-sm"
       />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-slate-500">
-          Changes are shared with all dashboard users. Do not enter confidential, personal,
-          or sensitive information in the remarks.
-        </p>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500" aria-live="polite">
-            {remaining} characters remaining
-          </span>
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            onClick={handleSave}
-            disabled={disabled || saveState === "saving" || !hasUnsavedChanges}
-          >
-            {saveState === "saving" ? "Saving…" : "Save Remarks"}
-          </Button>
-        </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs text-slate-500" aria-live="polite">
+          {remaining} characters remaining
+        </span>
+        <Button
+          type="button"
+          className="h-11 w-full"
+          onClick={handleSave}
+          disabled={disabled || saveState === "saving" || !hasUnsavedChanges}
+        >
+          {saveState === "saving" ? "Saving…" : "Save Remarks"}
+        </Button>
       </div>
     </div>
   );

@@ -16,6 +16,10 @@ export function DashboardFooter() {
         users viewing this dashboard see the same submission statuses, remarks, and progress
         calculations.
       </p>
+      <p className="mt-4 max-w-3xl rounded-2xl border border-white/60 bg-white/50 p-4 text-xs leading-relaxed dark:border-slate-700 dark:bg-slate-900/40">
+        Changes are shared with all dashboard users. Do not enter confidential, personal, or
+        sensitive information in the remarks.
+      </p>
     </footer>
   );
 }

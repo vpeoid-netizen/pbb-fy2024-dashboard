@@ -41,21 +41,13 @@ export function DashboardPageClient() {
 
   return (
     <>
-      <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:py-8">
+      <div className="mx-auto max-w-7xl space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-6 md:py-8">
         <DashboardHeader />
 
         <MonitoringSummaryCard
           summary={data.summary}
           serverTimestamp={data.serverTimestamp}
           connectionStatus={connectionStatus}
-        />
-
-        <EligibilityCalculator
-          assessment={data.eligibilityAssessment}
-          result={data.eligibilityResult}
-          disabled={!isOnline}
-          onRequestUpdater={requestUpdater}
-          onUpdated={handleUpdated}
         />
 
         <RecentActivity activity={data.recentActivity} />
@@ -69,6 +61,14 @@ export function DashboardPageClient() {
 
         <RequirementsSections
           requirements={requirementsForGrid}
+          disabled={!isOnline}
+          onRequestUpdater={requestUpdater}
+          onUpdated={handleUpdated}
+        />
+
+        <EligibilityCalculator
+          assessment={data.eligibilityAssessment}
+          result={data.eligibilityResult}
           disabled={!isOnline}
           onRequestUpdater={requestUpdater}
           onUpdated={handleUpdated}

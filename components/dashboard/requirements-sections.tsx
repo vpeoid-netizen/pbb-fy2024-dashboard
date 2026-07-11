@@ -116,11 +116,6 @@ export function RequirementsSections({
               >
                 Dimensions of Accountability (Results Areas)
               </h2>
-              <p className="mt-2 max-w-4xl text-sm text-slate-600 dark:text-slate-300">
-                Performance Results are monitored across four MFOs. Process, Financial, and
-                Citizen/Client Satisfaction Results are presented as equally important areas
-                below.
-              </p>
             </div>
 
             <div className="mt-6 space-y-6">
