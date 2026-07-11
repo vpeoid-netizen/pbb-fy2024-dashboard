@@ -7,15 +7,18 @@ import { Button } from "@/components/ui/button";
 import { UniversityLogo } from "@/components/dashboard/university-logo";
 import { REPORTING_FORMS } from "@/types/pbb";
 
+const headerActionClassName =
+  "h-9 shrink-0 px-2.5 text-xs sm:h-10 sm:px-3 sm:text-sm md:px-4";
+
 export function DashboardHeader() {
   const { theme, setTheme } = useTheme();
 
   return (
     <header className="glass-card no-print rounded-3xl p-5 md:p-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
+        <div className="flex min-w-0 items-center gap-4">
           <UniversityLogo />
-          <div>
+          <div className="min-w-0">
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-royal-blue">
               Partido State University
             </p>
@@ -28,32 +31,29 @@ export function DashboardHeader() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="secondary" asChild>
+        <div className="flex w-full flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-2 xl:w-auto xl:shrink-0 xl:justify-end xl:overflow-visible [&::-webkit-scrollbar]:hidden">
+          <Button variant="secondary" size="sm" className={headerActionClassName} asChild>
             <Link href="/docs/user-manual.html" target="_blank" rel="noopener noreferrer">
-              <BookOpen className="h-4 w-4" />
-              User Manual & FAQs
+              <BookOpen className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">User Manual & FAQs</span>
             </Link>
           </Button>
-          <Button variant="secondary" asChild>
+          <Button variant="secondary" size="sm" className={headerActionClassName} asChild>
             <Link href="/documents/Guidelines.pdf" target="_blank" rel="noopener noreferrer">
-              <FileText className="h-4 w-4" />
-              View Guidelines
+              <FileText className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">View Guidelines</span>
             </Link>
           </Button>
-          <Button variant="gold" asChild>
-            <a
-              href={REPORTING_FORMS.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FolderOpen className="h-4 w-4" />
-              Open Reporting Forms
+          <Button variant="gold" size="sm" className={headerActionClassName} asChild>
+            <a href={REPORTING_FORMS.url} target="_blank" rel="noopener noreferrer">
+              <FolderOpen className="h-4 w-4 shrink-0" />
+              <span className="whitespace-nowrap">Open Reporting Forms</span>
             </a>
           </Button>
           <Button
             variant="ghost"
             size="icon"
+            className="h-9 w-9 shrink-0 sm:h-10 sm:w-10"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             aria-label="Toggle theme"
           >
