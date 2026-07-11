@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { normalizeUpdaterName } from "@/lib/updater-name";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,14 +30,19 @@ export function getStoredUpdaterName(): string {
   if (typeof window === "undefined") {
     return "";
   }
-  return localStorage.getItem("pbb-updater-name") ?? "";
+  const stored = localStorage.getItem("pbb-updater-name") ?? "";
+  const normalized = normalizeUpdaterName(stored);
+  if (normalized !== stored) {
+    localStorage.setItem("pbb-updater-name", normalized);
+  }
+  return normalized;
 }
 
 export function setStoredUpdaterName(name: string): void {
   if (typeof window === "undefined") {
     return;
   }
-  localStorage.setItem("pbb-updater-name", name);
+  localStorage.setItem("pbb-updater-name", normalizeUpdaterName(name));
 }
 
 export function copyToClipboard(text: string): Promise<void> {

@@ -5,6 +5,7 @@ import {
   fetchSubmittedCount,
 } from "@/lib/dashboard-queries";
 import { calculateSummary } from "@/lib/eligibility";
+import { normalizeUpdaterName } from "@/lib/updater-name";
 import { TOTAL_REQUIREMENTS } from "@/data/pbbRequirements";
 import type { LateReportorialSubmission, RequirementWithMonitoring } from "@/types/pbb";
 
@@ -24,6 +25,7 @@ export async function updateRequirementMonitoring(
   | { success: false; conflict: true }
   | { success: false; conflict: false; error: string }
 > {
+  const updatedBy = normalizeUpdaterName(input.updatedBy);
   const existingRows = (await sql`
     SELECT submitted, remarks, version
     FROM requirement_monitoring
@@ -43,7 +45,7 @@ export async function updateRequirementMonitoring(
     SET
       submitted = ${nextSubmitted},
       remarks = ${nextRemarks},
-      updated_by = ${input.updatedBy},
+      updated_by = ${updatedBy},
       submitted_at = CASE
         WHEN ${nextSubmitted} = TRUE AND submitted = FALSE THEN NOW()
         WHEN ${nextSubmitted} = FALSE THEN NULL
@@ -96,7 +98,7 @@ export async function updateRequirementMonitoring(
       ${updated.submitted},
       ${existing.remarks},
       ${updated.remarks},
-      ${input.updatedBy},
+      ${updatedBy},
       ${input.browserSessionId ?? null}
     )
   `;
@@ -141,6 +143,7 @@ type UpdateEligibilityInput = {
 export async function updateEligibilityAssessment(
   input: UpdateEligibilityInput,
 ): Promise<{ success: true } | { success: false; conflict: true } | { success: false; conflict: false }> {
+  const updatedBy = normalizeUpdaterName(input.updatedBy);
   const updatedRows = (await sql`
     UPDATE eligibility_assessment
     SET
@@ -163,7 +166,7 @@ export async function updateEligibilityAssessment(
       financial_remarks = ${input.financialRemarks},
       hotline_remarks = ${input.hotlineRemarks},
       ccb_remarks = ${input.ccbRemarks},
-      updated_by = ${input.updatedBy},
+      updated_by = ${updatedBy},
       updated_at = NOW(),
       version = version + 1
     WHERE id = 1 AND version = ${input.expectedVersion}
@@ -181,7 +184,7 @@ export async function updateEligibilityAssessment(
       metadata
     ) VALUES (
       'eligibility_updated',
-      ${input.updatedBy},
+      ${updatedBy},
       ${JSON.stringify({ version: input.expectedVersion + 1 })}::jsonb
     )
   `;
@@ -201,13 +204,14 @@ type UpdateAccountabilityInput = {
 export async function updateAccountabilityAssessment(
   input: UpdateAccountabilityInput,
 ): Promise<{ success: true } | { success: false; conflict: true } | { success: false; conflict: false }> {
+  const updatedBy = normalizeUpdaterName(input.updatedBy);
   const updatedRows = (await sql`
     UPDATE accountability_assessments
     SET
       assessment = ${input.assessment},
       notes = ${input.notes},
       is_applicable = ${input.isApplicable},
-      updated_by = ${input.updatedBy},
+      updated_by = ${updatedBy},
       updated_at = NOW(),
       version = version + 1
     WHERE accountability_id = ${input.accountabilityId}
@@ -226,7 +230,7 @@ export async function updateAccountabilityAssessment(
       metadata
     ) VALUES (
       'accountability_updated',
-      ${input.updatedBy},
+      ${updatedBy},
       ${JSON.stringify({
         accountabilityId: input.accountabilityId,
         assessment: input.assessment,
