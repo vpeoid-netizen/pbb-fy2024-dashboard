@@ -56,7 +56,7 @@ export function RecentActivity({ activity }: { activity: AuditEntry[] }) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [fullActivity, setFullActivity] = useState<AuditEntry[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
-  const recentActivity = activity.slice(0, 5);
+  const recentActivity = activity.slice(0, 3);
 
   useEffect(() => {
     if (!historyOpen) {

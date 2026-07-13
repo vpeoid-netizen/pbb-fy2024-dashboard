@@ -338,7 +338,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
       fetchSubmittedCount(),
       fetchEligibilityAssessment(),
       fetchAccountabilities(),
-      fetchRecentActivity(5),
+      fetchRecentActivity(3),
     ]);
 
   const totalCount = requirements.length || TOTAL_REQUIREMENTS;

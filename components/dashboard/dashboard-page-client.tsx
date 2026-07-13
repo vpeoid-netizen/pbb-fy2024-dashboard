@@ -7,6 +7,7 @@ import { DashboardFooter } from "@/components/dashboard/footer";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { EligibilityCalculator } from "@/components/dashboard/eligibility-calculator";
 import { MonitoringSummaryCard } from "@/components/dashboard/monitoring-summary";
+import { UploadDeadlineReminder } from "@/components/dashboard/upload-deadline-reminder";
 import { PrintReport } from "@/components/dashboard/print-report";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { RequirementsSections } from "@/components/dashboard/requirements-sections";
@@ -49,6 +50,8 @@ export function DashboardPageClient() {
           serverTimestamp={data.serverTimestamp}
           connectionStatus={connectionStatus}
         />
+
+        <UploadDeadlineReminder />
 
         <RecentActivity activity={data.recentActivity} />
 
