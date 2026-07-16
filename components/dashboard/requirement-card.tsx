@@ -63,8 +63,9 @@ export function RequirementCard({
   return (
     <article
       className={cn(
-        "glass-card flex h-full min-w-0 flex-col overflow-hidden rounded-3xl",
+        "glass-card flex h-full min-w-0 flex-col overflow-hidden rounded-3xl transition-colors",
         compact ? "p-4" : "p-5",
+        requirement.submitted && "requirement-card-submitted",
       )}
     >
       <div className="flex min-h-0 flex-1 flex-col">

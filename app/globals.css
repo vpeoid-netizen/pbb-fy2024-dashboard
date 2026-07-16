@@ -86,6 +86,22 @@ body {
     0 12px 32px rgba(0, 0, 0, 0.42);
 }
 
+.glass-card.requirement-card-submitted {
+  background: rgba(236, 253, 245, 0.96);
+  border: 1px solid rgba(21, 128, 61, 0.32);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 12px 32px rgba(21, 128, 61, 0.12);
+}
+
+.dark .glass-card.requirement-card-submitted {
+  background: rgba(6, 78, 59, 0.28);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 32px rgba(0, 0, 0, 0.42);
+}
+
 @media print {
   body {
     background: white !important;
