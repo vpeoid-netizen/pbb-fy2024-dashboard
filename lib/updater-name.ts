@@ -1,5 +1,6 @@
 const UPDATER_NAME_ALIASES: Record<string, string> = {
-  IPDO: "IPDO_Kier",
+  IPDO: "PBB Focal Person",
+  IPDO_Kier: "PBB Focal Person",
 };
 
 export function normalizeUpdaterName(name: string): string {
