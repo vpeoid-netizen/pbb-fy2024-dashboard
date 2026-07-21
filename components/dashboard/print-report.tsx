@@ -54,14 +54,14 @@ export function PrintReport({ data }: { data: DashboardData }) {
         {data.eligibilityResult.basePbbRatePercentOfMbs !== null && (
           <p>
             Estimated base PBB rate:{" "}
-            {data.eligibilityResult.basePbbRatePercentOfMbs.toFixed(2)}% of MBS
+            {data.eligibilityResult.basePbbRatePercentOfMbs.toFixed(2)}% of Monthly Basic Salary
           </p>
         )}
         {data.eligibilityResult.adjustedPbbRatePercentOfMbs !== null &&
           !data.eligibilityAssessment.allReportsSubmittedOnTime && (
             <p>
               Estimated adjusted PBB rate:{" "}
-              {data.eligibilityResult.adjustedPbbRatePercentOfMbs.toFixed(2)}% of MBS
+              {data.eligibilityResult.adjustedPbbRatePercentOfMbs.toFixed(2)}% of Monthly Basic Salary
             </p>
           )}
       </section>

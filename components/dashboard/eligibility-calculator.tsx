@@ -678,7 +678,7 @@ export function EligibilityCalculator({
             <div className="space-y-1 text-sm">
               <p>
                 Estimated base PBB rate (indicative):{" "}
-                <strong>{displayResult.basePbbRatePercentOfMbs.toFixed(2)}%</strong> of MBS
+                <strong>{displayResult.basePbbRatePercentOfMbs.toFixed(2)}%</strong> of Monthly Basic Salary
               </p>
               {!form.allReportsSubmittedOnTime &&
                 displayResult.adjustedPbbRatePercentOfMbs !== null && (
@@ -686,7 +686,7 @@ export function EligibilityCalculator({
                     Estimated adjusted rate after possible late-submission reduction
                     (indicative):{" "}
                     <strong>{displayResult.adjustedPbbRatePercentOfMbs.toFixed(2)}%</strong> of
-                    MBS
+                    Monthly Basic Salary
                   </p>
                 )}
             </div>
