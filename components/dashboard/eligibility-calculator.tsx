@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { reportorialRequirements } from "@/data/reportorialRequirements";
-import { calculateEligibilityResult } from "@/lib/eligibility";
+import { calculateEligibilityResult, calculateFinancialRating } from "@/lib/eligibility";
 import { formatManilaDateTime } from "@/lib/date-time";
 import type {
   EligibilityAssessment,
@@ -59,7 +59,7 @@ function SectionRemarks({
 
 export function EligibilityCalculator({
   assessment,
-  result,
+  result: _result,
   disabled,
   onRequestUpdater,
   onUpdated,
@@ -190,14 +190,12 @@ export function EligibilityCalculator({
     });
   }, [assessment.version, form, onRequestUpdater, onUpdated]);
 
-  const displayResult: EligibilityResult = isDirty
-    ? calculateEligibilityResult({
-        ...form,
-        updatedBy: assessment.updatedBy,
-        updatedAt: assessment.updatedAt,
-        version: assessment.version,
-      })
-    : result;
+  const displayResult: EligibilityResult = calculateEligibilityResult({
+    ...form,
+    updatedBy: assessment.updatedBy,
+    updatedAt: assessment.updatedAt,
+    version: assessment.version,
+  });
 
   const statusClass =
     displayResult.status === "Not Yet Assessed"
@@ -353,11 +351,23 @@ export function EligibilityCalculator({
                 onChange={(event) =>
                   updateField(
                     "disbursementBurPercent",
-                    event.target.value ? Number(event.target.value) : null,
+                    event.target.value === "" ? null : Number(event.target.value),
                   )
                 }
                 disabled={disabled}
               />
+              <p className="mt-2 text-xs text-slate-500">
+                Rating scale: below 40% = 1 · 40–54.99% = 2 · 55–69.99% = 3 · 70–84.99% = 4 ·
+                85% and above = 5. Your current entry of{" "}
+                {form.disbursementBurPercent === null
+                  ? "—"
+                  : `${form.disbursementBurPercent}%`}{" "}
+                maps to Rating{" "}
+                {form.disbursementBurPercent === null
+                  ? "—"
+                  : calculateFinancialRating(form.disbursementBurPercent)}
+                .
+              </p>
             </div>
             <SectionRemarks
               id="financial-remarks"

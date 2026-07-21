@@ -154,6 +154,39 @@ describe("total score and PBB rate", () => {
     expect(result.hasIsolationRisk).toBe(true);
     expect(result.isolationRiskCriteria).toContain("Process Results");
   });
+
+  it("counts only assessed criteria so low BUR still changes the score", () => {
+    const withPerformanceOnly = calculateEligibilityResult({
+      ...baseAssessment,
+      processImprovementPercent: null,
+      disbursementBurPercent: null,
+      hotlineTicketCount: null,
+      hotlineResolutionRate: null,
+      hotlineNoComplaints: false,
+      ccbTicketCount: null,
+      ccbResolutionRate: null,
+      ccbNoComplaints: false,
+    });
+    const withFinancial = calculateEligibilityResult({
+      ...baseAssessment,
+      processImprovementPercent: null,
+      disbursementBurPercent: 19,
+      hotlineTicketCount: null,
+      hotlineResolutionRate: null,
+      hotlineNoComplaints: false,
+      ccbTicketCount: null,
+      ccbResolutionRate: null,
+      ccbNoComplaints: false,
+    });
+
+    expect(withPerformanceOnly.criteria.find((item) => item.name === "Financial Results")).toEqual(
+      expect.objectContaining({ rating: 0, points: 0 }),
+    );
+    expect(withFinancial.criteria.find((item) => item.name === "Financial Results")).toEqual(
+      expect.objectContaining({ rating: 1, points: 5 }),
+    );
+    expect(withFinancial.totalScore).toBe(withPerformanceOnly.totalScore + 5);
+  });
 });
 
 describe("validation", () => {

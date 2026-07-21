@@ -39,6 +39,37 @@ export function hasEligibilityInputs(assessment: EligibilityAssessment): boolean
   );
 }
 
+function hasPerformanceInputs(assessment: EligibilityAssessment): boolean {
+  return (
+    assessment.totalPerformanceIndicators !== null &&
+    assessment.performanceIndicatorsMet !== null
+  );
+}
+
+function hasProcessInputs(assessment: EligibilityAssessment): boolean {
+  return assessment.processImprovementPercent !== null;
+}
+
+function hasFinancialInputs(assessment: EligibilityAssessment): boolean {
+  return assessment.disbursementBurPercent !== null;
+}
+
+function hasHotlineInputs(assessment: EligibilityAssessment): boolean {
+  return (
+    assessment.hotlineNoComplaints ||
+    assessment.hotlineTicketCount !== null ||
+    assessment.hotlineResolutionRate !== null
+  );
+}
+
+function hasCcbInputs(assessment: EligibilityAssessment): boolean {
+  return (
+    assessment.ccbNoComplaints ||
+    assessment.ccbTicketCount !== null ||
+    assessment.ccbResolutionRate !== null
+  );
+}
+
 export function calculatePerformanceRating(
   total: number | null,
   met: number | null,
@@ -179,22 +210,38 @@ export function calculateEligibilityResult(
     return createEmptyEligibilityResult();
   }
 
-  const performanceRating = calculatePerformanceRating(
-    assessment.totalPerformanceIndicators,
-    assessment.performanceIndicatorsMet,
-  );
-  const processRating = calculateProcessRating(assessment.processImprovementPercent);
-  const financialRating = calculateFinancialRating(assessment.disbursementBurPercent);
-  const hotlineRating = calculateComplaintRating(
-    assessment.hotlineTicketCount,
-    assessment.hotlineResolutionRate,
-    assessment.hotlineNoComplaints,
-  );
-  const ccbRating = calculateComplaintRating(
-    assessment.ccbTicketCount,
-    assessment.ccbResolutionRate,
-    assessment.ccbNoComplaints,
-  );
+  const performanceAssessed = hasPerformanceInputs(assessment);
+  const processAssessed = hasProcessInputs(assessment);
+  const financialAssessed = hasFinancialInputs(assessment);
+  const hotlineAssessed = hasHotlineInputs(assessment);
+  const ccbAssessed = hasCcbInputs(assessment);
+
+  const performanceRating = performanceAssessed
+    ? calculatePerformanceRating(
+        assessment.totalPerformanceIndicators,
+        assessment.performanceIndicatorsMet,
+      )
+    : 0;
+  const processRating = processAssessed
+    ? calculateProcessRating(assessment.processImprovementPercent)
+    : 0;
+  const financialRating = financialAssessed
+    ? calculateFinancialRating(assessment.disbursementBurPercent)
+    : 0;
+  const hotlineRating = hotlineAssessed
+    ? calculateComplaintRating(
+        assessment.hotlineTicketCount,
+        assessment.hotlineResolutionRate,
+        assessment.hotlineNoComplaints,
+      )
+    : 0;
+  const ccbRating = ccbAssessed
+    ? calculateComplaintRating(
+        assessment.ccbTicketCount,
+        assessment.ccbResolutionRate,
+        assessment.ccbNoComplaints,
+      )
+    : 0;
 
   const criteria = [
     {
@@ -231,7 +278,7 @@ export function calculateEligibilityResult(
 
   const totalScore = criteria.reduce((sum, item) => sum + item.points, 0);
   const isolationRiskCriteria = criteria
-    .filter((item) => item.rating < 4)
+    .filter((item) => item.rating > 0 && item.rating < 4)
     .map((item) => item.name);
   const hasIsolationRisk = isolationRiskCriteria.length > 0;
   const status =
